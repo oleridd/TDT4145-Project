@@ -71,3 +71,5 @@ CREATE TABLE TogruteForekomst (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
+
+HEi

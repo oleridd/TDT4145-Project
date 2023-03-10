@@ -150,7 +150,6 @@ CRATE TABLE Sete (
 
 CRATE TABLE SitteBillett (
     ordereID            INTEGER,
-    togRuteForekomstID  INTEGER,
     vognID              INTEGER,
     seteNR              INTEGER,
     CONSTRAINT SitteBillett_PK PRIMARY KEY(ordereID, togRuteForekomstID),
@@ -165,7 +164,6 @@ CRATE TABLE SitteBillett (
 
 CRATE TABLE SoveBillett (
     ordereID            INTEGER,
-    togRuteForekomstID  INTEGER,
     vognID              INTEGER,
     sengNR              INTEGER,
     CONSTRAINT SoveBillett_PK PRIMARY KEY(ordereID, togRuteForekomstID),
@@ -192,6 +190,20 @@ CRATE TABLE KundeOrdere (
     kID                     INTEGER,
     CONSTRAINT KundeOrdere_PK PRIMARY KEY (ordereID),
     CONSTRAINT KundeOrdere_FK FOREIGN KEy (kID) REFERENCES Kunde(kID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+
+CRATE TABLE SitteBillettPaaDelStrekning (
+    delStrekningID          INTEGER,
+    ordereID                INTEGER,
+    billettNr              INTEGER,
+    CONSTRAINT SitteBillettPaaDelStrekning_PK PRIMARY KEY (delStrekningID, ordereID, biellettNr)
+    CONSTRAINT SitteBillettPaaDelStrekning_FK1 FOREIGN KEy (delStrekningID) REFERENCES Delstrekning(delStrekningID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT SitteBillettPaaDelStrekning_FK2 FOREIGN KEY (ordereID) REFERENCES KundeOrdere(ordereID)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );

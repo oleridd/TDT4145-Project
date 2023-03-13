@@ -130,7 +130,7 @@ CREATE TABLE SitteVogn (
     CONSTRAINT SitteVogn_PK PRIMARY KEY (vognID),
     CONSTRAINT SitteVong_FK FOREIGN KEY (vognID) REFERENCES VognTabel(vognID)
         ON UPDATE CASCADE
-        ON DELETE CASCADE,
+        ON DELETE CASCADE
 );
 
 CREATE TABLE OperatorHarVogn (
@@ -246,5 +246,5 @@ CREATE TABLE SitteBillettPaaDelStrekning (
         ON DELETE CASCADE,
     CONSTRAINT SitteBillettPaaDelStrekning_FK3 FOREIGN KEY (billettNR) REFERENCES SitteBillett(billettNR)
         ON UPDATE CASCADE
-        ON DELETE CASCADE,
+        ON DELETE CASCADE
 );

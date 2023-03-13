@@ -13,6 +13,7 @@ DROP TABLE VognITog;
 DROP TABLE banestrekning;
 DROP TABLE SitteBillettPaaDelStrekning;
 DROP TABLE delstrekning;
+DROP TABLE StoppPaa;
 DROP TABLE stasjon;
 DROP TABLE Togrute;
 DROP TABLE Operator;

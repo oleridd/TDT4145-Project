@@ -65,11 +65,35 @@ CREATE TABLE TogruteForekomst (
     togRuteForekomstID     INTEGER,
 	togRuteID			   INTEGER,
 	ukedag		           TEXT,
-	tidspunkt			   TIME,
-    CONSTRAINT TogruteForekomst_PK1  PRIMARY KEY (togRuteForekomstID),
+	startStasjonID		   INTEGER,
+	avgang				   TIME,
+	endeStasjonID		   INTEGER,
+	ankomst			       TIME,
+    CONSTRAINT TogruteForekomst_PK1 PRIMARY KEY (togRuteForekomstID),
     CONSTRAINT TogruteForekomst_FK1 FOREIGN KEY (togRuteID) REFERENCES Togrute(togRuteID)
         ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT TogruteForekomst_FK2 FOREIGN KEY (startStasjonID) REFERENCES Stasjon(stasjonID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT TogruteForekomst_FK3 FOREIGN KEY (endeStasjonID) REFERENCES Stasjon(stasjonID)
+        ON UPDATE CASCADE
         ON DELETE CASCADE
+);
+
+
+CREATE TABLE StoppPaa (
+	togruteForekomstID		INTEGER,
+	stasjonID				INTEGER,
+	avgang					TIME,
+	ankomst					TIME,
+	CONSTRAINT StoppPaa_PK PRIMARY KEY (togruteForekomstID, stasjonID),
+	CONSTRAINT StoppPaa_FK1 FOREIGN KEY (togruteForekomstID) REFERENCES Togruteforekomst(togruteForekomstID)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
+	CONSTRAINT StoppPaa_FK2 FOREIGN KEY (stasjonID) REFERENCES Stasjon(stasjonID)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
 );
 
 

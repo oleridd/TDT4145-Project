@@ -103,19 +103,29 @@ CREATE TABLE Operator (
     CONSTRAINT Operator_PK PRIMARY KEY (operatorID)
 );
 
+CREATE TABLE VognTabel (
+    vognID          INTEGER,
+    CONSTRAINT VognTabel PRIMARY KEY (vognID)
+);
 
 CREATE TABLE SoveVogn (
     vognID                 INTEGER,
     nKupe                  INTEGER,
     nSengPerKupe           INTEGER,
-    CONSTRAINT SoveVogn_PK PRIMARY KEY (vognID)
+    CONSTRAINT SoveVogn_PK PRIMARY KEY (vognID),
+    CONSTRAINT SoveVogn_FK FOREIGN KEY (vognID) REFERENCES VognTabel(vognID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
 );
 
 CREATE TABLE SitteVogn (
     vognID                 INTEGER,
     nRad                   INTEGER,
     nSeterPerKupe          INTEGER,
-    CONSTRAINT SitteVogn_PK PRIMARY KEY (vognID)
+    CONSTRAINT SitteVogn_PK PRIMARY KEY (vognID),
+    CONSTRAINT SitteVong_FK FOREIGN KEY (vognID) REFERENCES VognTabel(vognID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
 );
 
 CREATE TABLE OperatorHarVogn (

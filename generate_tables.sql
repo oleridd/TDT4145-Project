@@ -197,7 +197,7 @@ CREATE TABLE SitteBillettPaaDelStrekning (
     delStrekningID          INTEGER,
     ordereID                INTEGER,
     billettNr               INTEGER,
-    CONSTRAINT SitteBillettPaaDelStrekning_PK PRIMARY KEY (delStrekningID, ordereID, billettNr)
+    CONSTRAINT SitteBillettPaaDelStrekning_PK PRIMARY KEY (delStrekningID, ordereID, billettNr),
     CONSTRAINT SitteBillettPaaDelStrekning_FK1 FOREIGN KEY (delStrekningID) REFERENCES Delstrekning(delStrekningID)
         ON UPDATE CASCADE
         ON DELETE CASCADE,

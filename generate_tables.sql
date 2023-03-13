@@ -73,41 +73,35 @@ CREATE TABLE TogruteForekomst (
 );
 
 
-CREATE TABLE OperatorHarVogn (
+CREATE TABLE Operator (
     operatorID              INTEGER,
-    vognID                  INTEGER,
-    CONSTRAINT OperatorHarVogn_PK PRIMARY KEY (operatorID, vognID),
-    CONSTRAINT OperatorHarVogn_FK FOREIGN KEY (vognID) REFERENCES Operator(operatorID)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE,
-) ;     
-
-
-CRATE TABLE Vogn (
-    vognID INTEGER PRIMARY KEY,
-    Vogn BIT NOT NULL,
-    UNIQUE(VognID)
+    navn                    INTEGER,
+    CONSTRAINT Operator_PK PRIMARY KEY (operatorID)
 );
 
 
 CREATE TABLE SoveVogn (
     vognID                 INTEGER,
-    Vogn AS CAST(1 AS BIT) PERSISTED,
     nKupe                  INTEGER,
-    nSengPerKupe           Integer,
-    CONSTRAINT SoveVogn PRIMARY KEY (vognID),
-    Constraint SoveVogn_FK FOREIGN KEY (vognID) REFERENCES Vogn(vognID)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
+    nSengPerKupe           INTEGER,
+    CONSTRAINT SoveVogn_PK PRIMARY KEY (vognID)
 );
 
 CREATE TABLE SitteVogn (
     vognID                 INTEGER,
-    Vogn AS CAST(0 AS BIT) PERSISTED,
     nRad                   INTEGER,
-    nSeterPerKupe          Integer,
-    CONSTRAINT SoveVogn PRIMARY KEY (vognID),
-    CONSTRAINT SoveVogn_FK FOREIGN KEY (vognID) REFERENCES Vogn(vognID)
+    nSeterPerKupe          INTEGER,
+    CONSTRAINT SitteVogn_PK PRIMARY KEY (vognID)
+);
+
+CREATE TABLE OperatorHarVogn (
+    operatorID     INTEGER,
+    vognID         INTEGER,
+    CONSTRAINT OperatorHarVogn_PK1  PRIMARY KEY (operatorID, vognID),
+    CONSTRAINT OperatorHarVogn_FK1 FOREIGN KEY (operatorID) REFERENCES Operator(operatorID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT OperatorHarVogn_FK2 FOREIGN KEY (vognID) REFERENCES SoveVogn(vognID)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
@@ -127,33 +121,35 @@ CREATE TABLE VognITog (
 );
 
 
-CRATE TABLE Kupe (
+CREATE TABLE Kupe (
     vognID              INTEGER,
     kupeNR              INTEGER,
     antallSeng          INTEGER,
-    CONSTRAINT Seng_PK PRIMARY KEY (vognID, sengNR),
-    CONSTRAINT Seng_FK FOREIGN KEY (vognID) REFERENCES Vogn(vognID)
+    CONSTRAINT Kupe_PK PRIMARY KEY (vognID, kupeNR),
+    CONSTRAINT Kupe_FK FOREIGN KEY (vognID) REFERENCES SoveVogn(vognID)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
 
 
-CRATE TABLE Sete (
+CREATE TABLE Sete (
     vognID              INTEGER,
     seteNR              INTEGER,
     CONSTRAINT Sete_PK PRIMARY KEY (vognID, seteNR),
-    CONSTRAINT Sete_FK FOREIGN KEY (vognID) REFERENCES Vogn(vognID)
+    CONSTRAINT Sete_FK FOREIGN KEY (vognID) REFERENCES SoveVogn(vognID)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
 
 
-CRATE TABLE SitteBillett (
+CREATE TABLE SitteBillett (
     ordereID            INTEGER,
+	billettNR			INTEGER,
     vognID              INTEGER,
     seteNR              INTEGER,
-    CONSTRAINT SitteBillett_PK PRIMARY KEY(ordereID, togRuteForekomstID),
-    CONSTRAINT SitteBillett_FK1 FOREIGN KEY(vognID) REFERENCES Vogn(vognID)
+	Reisedato			DATE,
+    CONSTRAINT SitteBillett_PK PRIMARY KEY(ordereID, billettNR),
+    CONSTRAINT SitteBillett_FK1 FOREIGN KEY(vognID) REFERENCES SitteVogn(vognID)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     CONSTRAINT SitteBillett_FK2 FOREIGN KEY(seteNR) REFERENCES Sete(seteNR)
@@ -162,21 +158,23 @@ CRATE TABLE SitteBillett (
 );
 
 
-CRATE TABLE SoveBillett (
+CREATE TABLE SoveBillett (
     ordereID            INTEGER,
+	billettNR			INTEGER,
     vognID              INTEGER,
-    sengNR              INTEGER,
-    CONSTRAINT SoveBillett_PK PRIMARY KEY(ordereID, togRuteForekomstID),
-    CONSTRAINT SoveBillett_FK1 FOREIGN KEY(vognID) REFERENCES Vogn(vognID)
+    kupeNR              INTEGER,
+	Reisedato			DATE,
+    CONSTRAINT SoveBillett_PK PRIMARY KEY(ordereID, billettNR),
+    CONSTRAINT SoveBillett_FK1 FOREIGN KEY(vognID) REFERENCES SoveVogn(vognID)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    CONSTRAINT SoveBillett_FK2 FOREIGN KEY(sengNR) REFERENCES Seng(sengNR)
+    CONSTRAINT SoveBillett_FK2 FOREIGN KEY(kupeNR) REFERENCES Kupe(kupeNR)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
 
 
-CRATE TABLE Kunde (
+CREATE TABLE Kunde (
     kID                 INTEGER,
     navn                TEXT,
     epost               TEXT,
@@ -184,7 +182,7 @@ CRATE TABLE Kunde (
 );
 
 
-CRATE TABLE KundeOrdere (
+CREATE TABLE KundeOrdere (
     ordereID                INTEGER,
     dato                    DATE,
     kID                     INTEGER,
@@ -195,12 +193,12 @@ CRATE TABLE KundeOrdere (
 );
 
 
-CRATE TABLE SitteBillettPaaDelStrekning (
+CREATE TABLE SitteBillettPaaDelStrekning (
     delStrekningID          INTEGER,
     ordereID                INTEGER,
-    billettNr              INTEGER,
-    CONSTRAINT SitteBillettPaaDelStrekning_PK PRIMARY KEY (delStrekningID, ordereID, biellettNr)
-    CONSTRAINT SitteBillettPaaDelStrekning_FK1 FOREIGN KEy (delStrekningID) REFERENCES Delstrekning(delStrekningID)
+    billettNr               INTEGER,
+    CONSTRAINT SitteBillettPaaDelStrekning_PK PRIMARY KEY (delStrekningID, ordereID, billettNr)
+    CONSTRAINT SitteBillettPaaDelStrekning_FK1 FOREIGN KEY (delStrekningID) REFERENCES Delstrekning(delStrekningID)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     CONSTRAINT SitteBillettPaaDelStrekning_FK2 FOREIGN KEY (ordereID) REFERENCES KundeOrdere(ordereID)

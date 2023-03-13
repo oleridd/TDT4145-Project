@@ -28,6 +28,7 @@ CREATE TABLE Banestrekning (
     sisteStrekning      INTEGER,
     navn                TEXT,
     fremdriftEnergi     TEXT,
+    erHovedrettning     BOOLEAN,
     CONSTRAINT Banestrekning_PK PRIMARY KEY (baneStrekningID),
     CONSTRAINT Banestrekning_FK1 FOREIGN KEY (forsteStrekning) REFERENCES Delstrekning(DelstrekningID)
         ON UPDATE CASCADE

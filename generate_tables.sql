@@ -242,5 +242,8 @@ CREATE TABLE SitteBillettPaaDelStrekning (
         ON DELETE CASCADE,
     CONSTRAINT SitteBillettPaaDelStrekning_FK2 FOREIGN KEY (ordereID) REFERENCES KundeOrdere(ordereID)
         ON UPDATE CASCADE
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT SitteBillettPaaDelStrekning_FK3 FOREIGN KEY (billettNR) REFERENCES SitteBillett(billettNR)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
 );

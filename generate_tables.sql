@@ -10,6 +10,8 @@ CREATE TABLE Delstrekning (
     delStrekningID    INTEGER,
     startStasjonID     INTEGER,
     endeStasjonID      INTEGER,
+    lengde             INTEGER,
+    sporType          TEXT,
     CONSTRAINT Delstrekning_PK PRIMARY KEY (delStrekningID),
     CONSTRAINT Delstrekning_FK1 FOREIGN KEY (startStasjonID) REFERENCES Stasjon(stasjonID)
         ON UPDATE CASCADE
@@ -25,6 +27,7 @@ CREATE TABLE Banestrekning (
     forsteStrekning     INTEGER,
     sisteStrekning      INTEGER,
     navn                TEXT,
+    fremdriftEnergi     TEXT,
     CONSTRAINT Banestrekning_PK PRIMARY KEY (baneStrekningID),
     CONSTRAINT Banestrekning_FK1 FOREIGN KEY (forsteStrekning) REFERENCES Delstrekning(DelstrekningID)
         ON UPDATE CASCADE

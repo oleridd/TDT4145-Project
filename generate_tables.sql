@@ -21,9 +21,10 @@ CREATE TABLE Delstrekning (
 
 
 CREATE TABLE Banestrekning (
-    baneStrekningID    INTEGER,
+    baneStrekningID     INTEGER,
     forsteStrekning     INTEGER,
     sisteStrekning      INTEGER,
+    navn                TEXT,
     CONSTRAINT Banestrekning_PK PRIMARY KEY (baneStrekningID),
     CONSTRAINT Banestrekning_FK1 FOREIGN KEY (forsteStrekning) REFERENCES Delstrekning(DelstrekningID)
         ON UPDATE CASCADE

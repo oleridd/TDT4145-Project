@@ -212,6 +212,7 @@ CREATE TABLE Kunde (
     kID                 INTEGER,
     navn                TEXT,
     epost               TEXT,
+    mobilnummer         INTEGER,
     CONSTRAINT Kunde_PK PRIMARY KEY (kID)
 );
 

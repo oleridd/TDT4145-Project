@@ -5,8 +5,6 @@ DROP TABLE SoveBillett;
 DROP TABLE SitteBillett;
 DROP TABLE SoveVogn;
 DROP TABLE SitteVogn;
-DROP TABLE Kunde;
-DROP TABLE KundeOrdere;
 DROP TABLE StrekningPaaBanestrekning;
 DROP TABLE TogruteForekomst;
 DROP TABLE VognITog;
@@ -17,3 +15,6 @@ DROP TABLE StoppPaa;
 DROP TABLE stasjon;
 DROP TABLE Togrute;
 DROP TABLE Operator;
+DROP TABLE Kunde;
+DROP TABLE KundeOrdere;
+DROP TABLE VognTabel

@@ -25,6 +25,15 @@ VALUES
 (1, 1, 9, "Nordlandsbanen", "diesel", FALSE),
 (2, 10, 2, "Nordlandsbanen", "diesel", TRUE);
 
+INSERT INTO StrekningPaaBanestrekning (baneStrekningID, delStrekningID)
+VALUES
+(1, 3),
+(1, 5),
+(1, 7),
+(2, 2),
+(2, 4),
+(2, 6),
+(2, 8);
 
 
 

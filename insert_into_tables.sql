@@ -22,7 +22,9 @@ VALUES
 
 INSERT INTO Banestrekning (baneStrekningID, forsteStrekning, sisteStrekning, navn, fremdriftEnergi, erHovedrettning)
 VALUES
-(1, 1, 9, "Bodo til Trondheim", "diesel", FALSE),
-(2, 10, 2, "Trondheim til Bodo", "diesel", TRUE);
+(1, 1, 9, "Nordlandsbanen", "diesel", FALSE),
+(2, 10, 2, "Nordlandsbanen", "diesel", TRUE);
+
+
 
 

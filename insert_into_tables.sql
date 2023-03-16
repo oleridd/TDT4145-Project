@@ -20,3 +20,9 @@ VALUES
 (9, 5, 6, 120, "dobbeltspor"),
 (10, 6, 5, 120, "dobbeltspor");
 
+INSERT INTO Banestrekning (baneStrekningID, forsteStrekning, sisteStrekning, navn, fremdriftEnergi, erHovedrettning)
+VALUES
+(1, 1, 9, "Bodo til Trondheim", "diesel", FALSE),
+(2, 10, 2, "Trondheim til Bodo", "diesel", TRUE);
+
+

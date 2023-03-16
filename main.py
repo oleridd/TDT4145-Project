@@ -1,18 +1,14 @@
-import sqlite3 as s
-
-con = s.connect("Jernbanenett.db")
-
-cursor = con.cursor()
-
-cursor.execute("SELECT * FROM Stasjon")
-
-rows = cursor.fetchall()
-print("All rows in the table stasjon:")
-print(rows)
-
-con.close()
+import sqlite3 as sql
 
 
 def train_stop_at_station_on_day(station, day):
-    con = s.connect("Jernbanenett.db")
+    con = sql.connect("Jernbanenett.db")
     cursor = con.cursor()
+
+
+def main():
+    pass
+
+
+if __name__ == "__main__":
+    main()

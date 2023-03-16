@@ -108,7 +108,7 @@ CREATE TABLE Operator (
     CONSTRAINT Operator_PK PRIMARY KEY (operatorID)
 );
 
-CREATE TABLE VognTabel (
+CREATE TABLE VognTable (
     vognID          INTEGER,
     CONSTRAINT VognTabel PRIMARY KEY (vognID)
 );

@@ -1,5 +1,5 @@
 import sqlite3 as sql
-from get_train_routes import get_train_routes
+from test import *
 
 
 def train_stop_at_station_on_day(station, day):
@@ -8,10 +8,8 @@ def train_stop_at_station_on_day(station, day):
 
 
 def main():
-    print(
-        get_train_routes(1, "mandag"),
-        get_train_routes(6, "onsdag")
-    )
+    # test_get_train_routes()
+    test_register_customer()
 
 
 if __name__ == "__main__":

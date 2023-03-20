@@ -7,13 +7,13 @@ class TrainRoutes:
     def __init__(self):
 
         self.date_map = {
-            1 : "mandag" ,
-            2 : "tirsdag",
-            3 : "onsdag" ,
-            4 : "torsdag",
-            5 : "fredag" ,
-            6 : "lørdag" ,
-            7 : "søndag"
+            0 : "mandag" ,
+            1 : "tirsdag",
+            2 : "onsdag" ,
+            3 : "torsdag",
+            4 : "fredag" ,
+            5 : "lørdag" ,
+            6 : "søndag"
         }
         
 
@@ -33,7 +33,7 @@ class TrainRoutes:
         """
         dt = datetime.strptime(date, '%Y-%m-%d').date()
         weekday_nr = dt.isoweekday()
-        this_day, next_day = self.date_map[weekday_nr], self.date_map[weekday_nr+1]
+        this_day, next_day = self.date_map[weekday_nr-1], self.date_map[weekday_nr % 7]
 
         with sql.connect('Jernbanenett.db') as con:
             cursor = con.cursor()

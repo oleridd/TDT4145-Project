@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/Jonas/Documents/TDT4145/Prosjekt 1/TDT4145-Project/Jernbanenett.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="0"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="150"/><column_width id="3" width="6242"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,7:mainStasjon"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="Banestrekning" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="186"/><column index="2" value="170"/><column index="3" value="157"/><column index="4" value="151"/><column index="5" value="169"/><column index="6" value="179"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Stasjon" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="109"/><column index="2" value="103"/><column index="3" value="61"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">CREATE TABLE Stasjon (
+    stasjonID    INTEGER,
+    navn         VARCHAR(30),
+    moh          DECIMAL,
+    CONSTRAINT Stasjon_PK PRIMARY KEY (stasjonID)
+);
+
+
+CREATE TABLE Delstrekning (
+    delStrekningID    INTEGER,
+    startStasjonID     INTEGER,
+    endeStasjonID      INTEGER,
+    lengde             INTEGER,
+    sporType          TEXT,
+    CONSTRAINT Delstrekning_PK PRIMARY KEY (delStrekningID),
+    CONSTRAINT Delstrekning_FK1 FOREIGN KEY (startStasjonID) REFERENCES Stasjon(stasjonID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT Delstrekning_FK2 FOREIGN KEY (endeStasjonID) REFERENCES Stasjon(stasjonID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+
+CREATE TABLE Banestrekning (
+    baneStrekningID     INTEGER,
+    forsteStrekning     INTEGER,
+    sisteStrekning      INTEGER,
+    navn                TEXT,
+    fremdriftEnergi     TEXT,
+    erHovedrettning     BOOLEAN,
+    CONSTRAINT Banestrekning_PK PRIMARY KEY (baneStrekningID),
+    CONSTRAINT Banestrekning_FK1 FOREIGN KEY (forsteStrekning) REFERENCES Delstrekning(DelstrekningID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT Banestrekning_FK2 FOREIGN KEY (sisteStrekning) REFERENCES Delstrekning(DelstrekningID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+
+CREATE TABLE StrekningPaaBanestrekning (
+    baneStrekningID     INTEGER,
+    delStrekningID      INTEGER,
+    CONSTRAINT StrekningPaaBanestrekning_PK1  PRIMARY KEY (baneStrekningID, delStrekningID),
+    CONSTRAINT StrekningPaaBanestrekning_FK1 FOREIGN KEY (baneStrekningID) REFERENCES Banestrekning(BanestrekningID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT StrekningPaaBanestrekning_FK2 FOREIGN KEY (delStrekningID) REFERENCES Delstrekning(delStrekningID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+
+CREATE TABLE Togrute (
+    togRuteID    		INTEGER,
+	baneStrekningID		INTEGER,
+	operatorID			INTEGER,
+    CONSTRAINT Togrute_PK1 PRIMARY KEY (togRuteID),
+    CONSTRAINT Togrute_FK1 FOREIGN KEY (baneStrekningID) REFERENCES Banestrekning(BanestrekningID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT Togrute_FK2 FOREIGN KEY (operatorID) REFERENCES Operator(operatorID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+
+CREATE TABLE TogruteForekomst (
+    togRuteForekomstID     INTEGER,
+	togRuteID			   INTEGER,
+	ukedag		           TEXT,
+	startStasjonID		   INTEGER,
+	avgang				   TIME,
+	endeStasjonID		   INTEGER,
+	ankomst			       TIME,
+    CONSTRAINT TogruteForekomst_PK1 PRIMARY KEY (togRuteForekomstID),
+    CONSTRAINT TogruteForekomst_FK1 FOREIGN KEY (togRuteID) REFERENCES Togrute(togRuteID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT TogruteForekomst_FK2 FOREIGN KEY (startStasjonID) REFERENCES Stasjon(stasjonID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT TogruteForekomst_FK3 FOREIGN KEY (endeStasjonID) REFERENCES Stasjon(stasjonID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+
+CREATE TABLE StoppPaa (
+	togruteForekomstID		INTEGER,
+	stasjonID				INTEGER,
+	avgang					TIME,
+	ankomst					TIME,
+	CONSTRAINT StoppPaa_PK PRIMARY KEY (togruteForekomstID, stasjonID),
+	CONSTRAINT StoppPaa_FK1 FOREIGN KEY (togruteForekomstID) REFERENCES Togruteforekomst(togruteForekomstID)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE,
+	CONSTRAINT StoppPaa_FK2 FOREIGN KEY (stasjonID) REFERENCES Stasjon(stasjonID)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
+);
+
+
+CREATE TABLE Operator (
+    operatorID              INTEGER,
+    navn                    INTEGER,
+    CONSTRAINT Operator_PK PRIMARY KEY (operatorID)
+);
+
+CREATE TABLE VognTabel (
+    vognID          INTEGER,
+    CONSTRAINT VognTabel PRIMARY KEY (vognID)
+);
+
+CREATE TABLE SoveVogn (
+    vognID                 INTEGER,
+    nKupe                  INTEGER,
+    nSengPerKupe           INTEGER,
+    CONSTRAINT SoveVogn_PK PRIMARY KEY (vognID),
+    CONSTRAINT SoveVogn_FK FOREIGN KEY (vognID) REFERENCES VognTabel(vognID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+CREATE TABLE SitteVogn (
+    vognID                 INTEGER,
+    nRad                   INTEGER,
+    nSeterPerKupe          INTEGER,
+    CONSTRAINT SitteVogn_PK PRIMARY KEY (vognID),
+    CONSTRAINT SitteVong_FK FOREIGN KEY (vognID) REFERENCES VognTabel(vognID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+CREATE TABLE OperatorHarVogn (
+    operatorID     INTEGER,
+    vognID         INTEGER,
+    CONSTRAINT OperatorHarVogn_PK1  PRIMARY KEY (operatorID, vognID),
+    CONSTRAINT OperatorHarVogn_FK1 FOREIGN KEY (operatorID) REFERENCES Operator(operatorID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT OperatorHarVogn_FK2 FOREIGN KEY (vognID) REFERENCES SoveVogn(vognID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+
+CREATE TABLE VognITog (
+    vognID                  INTEGER,
+    togRuteID               INTEGER,
+    vognNr                  INTEGER,
+    CONSTRAINT VognITog_PK PRIMARY KEY (vognID, togRuteID),
+    CONSTRAINT VognITog_FK1 FOREIGN KEY (vognID) REFERENCES VognTable(vognID)
+        ON  UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT VognITog_FK2 FOREIGN KEY (togRuteID) REFERENCES Togrute(togRuteID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+
+CREATE TABLE Kupe (
+    vognID              INTEGER,
+    kupeNR              INTEGER,
+    antallSeng          INTEGER,
+    CONSTRAINT Kupe_PK PRIMARY KEY (vognID, kupeNR),
+    CONSTRAINT Kupe_FK FOREIGN KEY (vognID) REFERENCES SoveVogn(vognID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+
+CREATE TABLE Sete (
+    vognID              INTEGER,
+    seteNR              INTEGER,
+    CONSTRAINT Sete_PK PRIMARY KEY (vognID, seteNR),
+    CONSTRAINT Sete_FK FOREIGN KEY (vognID) REFERENCES SoveVogn(vognID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+
+CREATE TABLE SitteBillett (
+    ordereID            INTEGER,
+	billettNR			INTEGER,
+    vognID              INTEGER,
+    seteNR              INTEGER,
+	Reisedato			DATE,
+    CONSTRAINT SitteBillett_PK PRIMARY KEY(ordereID, billettNR),
+    CONSTRAINT SitteBillett_FK1 FOREIGN KEY(vognID) REFERENCES SitteVogn(vognID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT SitteBillett_FK2 FOREIGN KEY(seteNR) REFERENCES Sete(seteNR)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+
+CREATE TABLE SoveBillett (
+    ordereID            INTEGER,
+	billettNR			INTEGER,
+    vognID              INTEGER,
+    kupeNR              INTEGER,
+	Reisedato			DATE,
+    CONSTRAINT SoveBillett_PK PRIMARY KEY(ordereID, billettNR),
+    CONSTRAINT SoveBillett_FK1 FOREIGN KEY(vognID) REFERENCES SoveVogn(vognID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT SoveBillett_FK2 FOREIGN KEY(kupeNR) REFERENCES Kupe(kupeNR)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+
+CREATE TABLE Kunde (
+    kID                 INTEGER,
+    navn                TEXT,
+    epost               TEXT,
+    mobilnummer         INTEGER,
+    CONSTRAINT Kunde_PK PRIMARY KEY (kID)
+);
+
+
+CREATE TABLE KundeOrdere (
+    ordereID                INTEGER,
+    dato                    DATE,
+    kID                     INTEGER,
+    CONSTRAINT KundeOrdere_PK PRIMARY KEY (ordereID),
+    CONSTRAINT KundeOrdere_FK FOREIGN KEy (kID) REFERENCES Kunde(kID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+
+CREATE TABLE SitteBillettPaaDelStrekning (
+    delStrekningID          INTEGER,
+    ordereID                INTEGER,
+    billettNr               INTEGER,
+    CONSTRAINT SitteBillettPaaDelStrekning_PK PRIMARY KEY (delStrekningID, ordereID, billettNr),
+    CONSTRAINT SitteBillettPaaDelStrekning_FK1 FOREIGN KEY (delStrekningID) REFERENCES Delstrekning(delStrekningID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT SitteBillettPaaDelStrekning_FK2 FOREIGN KEY (ordereID) REFERENCES KundeOrdere(ordereID)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT SitteBillettPaaDelStrekning_FK3 FOREIGN KEY (billettNR) REFERENCES SitteBillett(billettNR)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);</sql><sql name="SQL 2">INSERT INTO Stasjon (stasjonID, navn, moh)
+VALUES 
+(1, &quot;Bodo&quot;, 4.1),
+(2, &quot;Fauske&quot;, 34.0),
+(3, &quot;Mo i Rana&quot;, 3.5),
+(4, &quot;Mosjoen&quot;, 6.8),
+(5, &quot;Steinkjer&quot;, 3.6),
+(6, &quot;Trondheim&quot;, 5.1);
+
+INSERT INTO Delstrekning (delstrekningID, startStasjonID, endeStasjonID, lengde, sporType)
+VALUES 
+(1, 1, 2, 60, &quot;enkeltspor&quot;),
+(2, 2, 1, 60, &quot;enkeltspor&quot;),
+(3, 2, 3, 170, &quot;enkeltspor&quot;),
+(4, 3, 2, 170, &quot;enkeltspor&quot;),
+(5, 3, 4, 90, &quot;enkeltspor&quot;),
+(6, 4, 3, 90, &quot;enkeltspor&quot;),
+(7, 4, 5, 280, &quot;enkeltspor&quot;),
+(8, 5, 4, 280, &quot;enkeltspor&quot;),
+(9, 5, 6, 120, &quot;dobbeltspor&quot;),
+(10, 6, 5, 120, &quot;dobbeltspor&quot;);
+
+INSERT INTO Banestrekning (baneStrekningID, forsteStrekning, sisteStrekning, navn, fremdriftEnergi, erHovedrettning)
+VALUES
+(1, 1, 9, &quot;Nordlandsbanen&quot;, &quot;diesel&quot;, FALSE),
+(2, 10, 2, &quot;Nordlandsbanen&quot;, &quot;diesel&quot;, TRUE);
+
+
+
+</sql><current_tab id="1"/></tab_sql></sqlb_project>

@@ -186,12 +186,16 @@ CREATE TABLE SitteBillett (
 	billettNR			INTEGER,
     vognID              INTEGER,
     seteNR              INTEGER,
+    togRuteForekomstID  INTEGER,
 	Reisedato			DATE,
     CONSTRAINT SitteBillett_PK PRIMARY KEY(ordereID, billettNR),
     CONSTRAINT SitteBillett_FK1 FOREIGN KEY(vognID) REFERENCES SitteVogn(vognID)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     CONSTRAINT SitteBillett_FK2 FOREIGN KEY(seteNR) REFERENCES Sete(seteNR)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT SitteBillett_FK3 FOREIGN KEY(forekomstID) REFERENCES Togruteforekomst(togruteForekomstID)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
@@ -202,12 +206,16 @@ CREATE TABLE SoveBillett (
 	billettNR			INTEGER,
     vognID              INTEGER,
     kupeNR              INTEGER,
+    togruteForekomstID  INTEGER,
 	Reisedato			DATE,
     CONSTRAINT SoveBillett_PK PRIMARY KEY(ordereID, billettNR),
     CONSTRAINT SoveBillett_FK1 FOREIGN KEY(vognID) REFERENCES SoveVogn(vognID)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     CONSTRAINT SoveBillett_FK2 FOREIGN KEY(kupeNR) REFERENCES Kupe(kupeNR)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT SoveBillett_FK3 FOREIGN KEY(forekomstID) REFERENCES Togruteforekomst(togruteForekomstID)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );

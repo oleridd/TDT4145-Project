@@ -1,17 +1,6 @@
 import sqlite3 as sql
 import numpy as np
-
-
-def is_member_of(arr: np.ndarray, lst: list) -> np.ndarray:
-    """
-    Iterates each element of arr and checks whether it is
-    an element of lst. Returns the result as a boolean array.
-    """
-    arr = arr.flatten()
-    result = np.zeros(len(arr), dtype=bool)
-    for i, elem in enumerate(arr):
-        result[i] = elem in lst
-    return result
+from utility import get_smallest_elem_without_successor, is_member_of
 
 
 def hent_ledige_billetter(togruteForekomstID: int, dato: str, strekninger: list[int]) -> tuple:
@@ -78,5 +67,85 @@ def hent_ledige_billetter(togruteForekomstID: int, dato: str, strekninger: list[
     return sovebilletter, sittebilletter
 
 
-def registrer_billettkjop():
-    pass
+def registrer_sittebillettkjop(kID: int, togruteForekomstID: int, dato: str, vognID, seteNR, strekninger) -> None:
+    """
+    Registrerer kjøp av sittebillett for en registrert kunde.
+
+    Argumenter:
+        kID                 (int): Kunde ID
+        togruteForekomstID  (int)
+        dato             (string)
+        vognID (int or list[int])
+        seteNR (int or list[int])
+        strekninger   (list[int]): Delstrekninger som billetten går over
+    Returnerer:
+        None
+    """
+    # NOTE: Innfør logikk på å ta utgangspunkt i vognNr når man spør kunden
+
+    # Pass på riktig listestruktur:
+    if not isinstance(vognID, list): vognID = [vognID]
+    if not isinstance(seteNR, list): seteNR = [seteNR]
+    assert len(vognID) == len(seteNR)
+
+    # Sjekk at billetten som skal bestilles er ledig:
+    _, ledige_billetter = hent_ledige_billetter(togruteForekomstID, dato, strekninger)
+    try:
+        for vID, sNR in zip(vognID, seteNR):
+            for delStrk in strekninger:
+                assert np.array([vID, sNR, delStrk]) in ledige_billetter
+    except AssertionError:
+        raise RuntimeError("Billetter på dette setet er allerede registrert")
+
+
+    with sql.connect("Jernbanenett.db") as con:
+
+        # Sjekker at kunden er registrert:
+        cursor = con.cursor()
+        cursor.execute("""
+            SELECT kID
+            FROM Kunde
+        """)
+        if not kID in np.array(cursor.fetchall()).flatten():
+            raise RuntimeError("Kunde er ikke registrert")
+
+        # Bestem unik ordreID:
+        cursor = con.cursor()
+        cursor.execute("""
+            SELECT ordereID
+            FROM KundeOrdere
+        """)
+        brukt_ordreID = np.array(cursor.fetchall())
+        ordreID = get_smallest_elem_without_successor(brukt_ordreID) + 1
+        print(ordreID) # BUG: Det er noe galt med ordreID her, fikser i morgen
+
+        # Insertering i KundeOrdre:
+        cursor = con.cursor()
+        cursor.execute("""
+            INSERT INTO KundeOrdere
+            VALUES
+            ((:ordreID), (:dato), (:kID));
+        """,
+        {'ordreID': ordreID, 'dato': dato, 'kID': kID}
+        )
+
+        # Insertering i SitteBillett og SittebillettPaaDelstrekning:
+        for i, (vID, sNR) in enumerate(zip(vognID, seteNR)):
+            cursor = con.cursor()
+            cursor.execute("""
+                INSERT INTO SitteBillett
+                VALUES
+                ((:ordreID), (:billettNR), (:vognID), (:seteNR), (:togruteForekomstID), (:dato));
+            """,
+            {'ordreID': ordreID, 'billettNR': i+1, 'vognID': vID, 'seteNR': sNR, 'togruteForekomstID': togruteForekomstID, 'dato': dato}
+            )
+            
+            for delStrk in strekninger:
+                cursor = con.cursor()
+                cursor.execute("""
+                    INSERT INTO SittebillettPaaDelstrekning
+                    VALUES
+                    ((:delStrekningID), (:ordreID), (:billettNR));
+                """,
+                {'delStrekningID': delStrk, 'ordreID': ordreID, 'billettNR': i+1}
+                )

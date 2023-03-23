@@ -1,24 +1,6 @@
 import sqlite3 as sql
 import numpy as np
-
-
-def get_smallest_elem_without_successor(arr: np.ndarray) -> int:
-    """
-    Given a numpy array of integers, returns the smallest element
-    in the array which does not have a successor.
-    If array is empty, returns 0.
-    """
-
-    if len(arr > 0):
-
-        arr.sort()
-        indicator = np.append(
-            np.invert(arr[:-1] == (arr-1)[1:]), # Indexes elements without successors (except the last)
-            [True]                              # Last element will never have a successor
-        )
-        return arr[indicator].min()
-    
-    return 0 # Array is empty
+from utility import get_smallest_elem_without_successor
 
 
 def registrer_kunde(navn: str, epost: str, mobilnummer: str) -> None:

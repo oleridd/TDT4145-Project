@@ -186,7 +186,7 @@ CREATE TABLE SitteBillett (
 	billettNR			INTEGER,
     vognID              INTEGER,
     seteNR              INTEGER,
-    togRuteForekomstID  INTEGER,
+    togruteForekomstID  INTEGER,
 	Reisedato			DATE,
     CONSTRAINT SitteBillett_PK PRIMARY KEY(ordereID, billettNR),
     CONSTRAINT SitteBillett_FK1 FOREIGN KEY(vognID) REFERENCES SitteVogn(vognID)

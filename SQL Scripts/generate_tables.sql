@@ -67,7 +67,7 @@ CREATE TABLE Togrute (
 
 
 CREATE TABLE TogruteForekomst (
-    togRuteForekomstID     INTEGER,
+    togruteForekomstID     INTEGER,
 	togRuteID			   INTEGER,
 	ukedag		           TEXT,
 	startStasjonID		   INTEGER,

@@ -47,7 +47,7 @@ class TrainRoutes:
                 ) AS togruteStopp AND
                 /* Hvordan får man rikig rekkefølge på start- og endestasjon */
                 """,
-                {'this_day': this_day, 'next_day': next_day, 'time': 'time'}
+                {'this_day': this_day, 'next_day': next_day, 'time': time, "startStasjonID" : startStasjonID, "endeStasjonID" : endeStasjonID}
             )
             # WHERE (ukedag = (:this_day) AND CAST(StoppPaa.ankomst AS FLOAT) > cast((:time) AS FLOAT)) OR
             # ukedag = (:next_day) AND StoppPaa.stasjonID = (:startStasjonID)

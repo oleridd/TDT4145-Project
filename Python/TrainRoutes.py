@@ -48,7 +48,7 @@ class TrainRoutes:
                 tg2.togruteForekomstID = sp2.togruteForekomstID)
                 ON tg1.togruteForekomstID = tg2.togruteForekomstID
                 WHERE (time(sp1.avgang) <= time(sp2.ankomst)
-	            OR (time(sp1.avgang) =< "24:00:00" and time(sp2.ankomst) > "00:00:00"))
+	            OR (time(sp1.avgang) =< "23:59:59" and time(sp2.ankomst) > "00:00:00"))
                 and (tg1.ukedag = (:this_day) OR tg1.ukedag = (:next_day))
                 and sp1.stasjonID = (:startStasjonID)  and sp2.stasjonID = (:endeStasjonID) 
                 ORDER BY tg1.avgang           

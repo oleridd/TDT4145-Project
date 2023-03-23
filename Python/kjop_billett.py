@@ -2,7 +2,19 @@ import sqlite3 as sql
 import numpy as np
 
 
-def hent_ledige_billetter(togruteForekomstID: int, dato: str) -> tuple:
+def is_member_of(arr: np.ndarray, lst: list) -> np.ndarray:
+    """
+    Iterates each element of arr and checks whether it is
+    an element of lst. Returns the result as a boolean array.
+    """
+    arr = arr.flatten()
+    result = np.zeros(len(arr), dtype=bool)
+    for i, elem in enumerate(arr):
+        result[i] = elem in lst
+    return result
+
+
+def hent_ledige_billetter(togruteForekomstID: int, dato: str, strekninger: list[int]) -> tuple:
     """
     Henter ledige billetter for en gitt togruteforekomst.
     Siden det ikke er snakk om billettkjøp, er disse identifisert
@@ -12,8 +24,9 @@ def hent_ledige_billetter(togruteForekomstID: int, dato: str) -> tuple:
     Argumenter:
         togruteForekomstID (int)
         dato            (string)
+        strekninger  (list[int]): En liste med delstrekningene billetten skal gjelde
     Returnerer:
-        Liste av: (vognID, seteNr)
+        Liste av: (vognID, seteNr, delStrekningID)
               og: (vognID, kupeNr)
     """
     # NOTE: Husk å passe på at ordreID for billetter er unikt
@@ -33,8 +46,7 @@ def hent_ledige_billetter(togruteForekomstID: int, dato: str) -> tuple:
         """,
         {'togruteForekomstID': togruteForekomstID, 'dato': dato}
         )
-        print(len(cursor.fetchall()))
-
+        sovebilletter = np.array(cursor.fetchall())
 
         # Sittebillett:
         cursor = con.cursor()
@@ -56,3 +68,15 @@ def hent_ledige_billetter(togruteForekomstID: int, dato: str) -> tuple:
         """,
         {'togruteForekomstID': togruteForekomstID, 'dato': dato}
         )
+        sittebilletter = np.array(cursor.fetchall())
+
+    # Henter kun ut relevante delstrekninger:
+    sittebilletter = sittebilletter[
+        is_member_of(sittebilletter[:, 2], strekninger)
+    ]
+
+    return sovebilletter, sittebilletter
+
+
+def registrer_billettkjop():
+    pass

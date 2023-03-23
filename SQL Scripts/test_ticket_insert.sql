@@ -7,12 +7,12 @@ VALUES
 INSERT INTO SitteBillett
 VALUES
 (3, 1, 2, 2, 4, "23/03/2023"),
-(4, 1, 3, 1, 4, "23/03/2023"), /* Noe galt med disse to */
+(4, 1, 3, 1, 4, "23/03/2023"),
 (4, 2, 3, 2, 4, "23/03/2023"),
 (5, 1, 2, 5, 4, "23/03/2023");
 
 
-INSERT INTO StrekningPaaBanestrekning
+INSERT INTO SitteBillettPaaDelStrekning
 VALUES
 (10, 4, 1), /* Disse to skal kun to strekninger */
 (8, 4, 1),

@@ -248,10 +248,7 @@ CREATE TABLE SitteBillettPaaDelStrekning (
     CONSTRAINT SitteBillettPaaDelStrekning_FK1 FOREIGN KEY (delStrekningID) REFERENCES Delstrekning(delStrekningID)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    CONSTRAINT SitteBillettPaaDelStrekning_FK2 FOREIGN KEY (ordereID) REFERENCES KundeOrdere(ordereID)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE,
-    CONSTRAINT SitteBillettPaaDelStrekning_FK3 FOREIGN KEY (billettNR) REFERENCES SitteBillett(billettNR)
+    CONSTRAINT SitteBillettPaaDelStrekning_FK2 FOREIGN KEY (ordereID, billettNR) REFERENCES SitteBillett(ordereID, billettNR)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );

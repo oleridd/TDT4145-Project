@@ -8,10 +8,10 @@ def get_smallest_elem_without_successor(arr: np.ndarray) -> int:
     in the array which does not have a successor.
     If array is empty, returns 0.
     """
-    arr = arr.sort()
 
     if len(arr > 0):
-        
+
+        arr.sort()
         indicator = np.append(
             np.invert(arr[:-1] == (arr-1)[1:]), # Indexes elements without successors (except the last)
             [True]                              # Last element will never have a successor
@@ -21,9 +21,9 @@ def get_smallest_elem_without_successor(arr: np.ndarray) -> int:
     return 0 # Array is empty
 
 
-def register_customer(navn: str, epost: str, mobilnummer: str) -> None:
+def registrer_kunde(navn: str, epost: str, mobilnummer: str) -> None:
     """
-    Registers the customer in the database.
+    Registrerer kunden i databasen
 
     Args:
         navn        (string)

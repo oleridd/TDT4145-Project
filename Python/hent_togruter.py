@@ -1,15 +1,15 @@
 import sqlite3 as sql
 
-def get_train_routes(stasjonID: int, ukedag: str) -> str:
+def hent_togruter(stasjonID: int, ukedag: str) -> str:
     """
-    Given a station ID and a weekday, returns all train routes which stop
-    at that station that day.
+    Gitt en stasjonID og en ukedag, henter alle togruter som stopper
+    på den stasjonen den gitte ukedagen.
     
-    Args:
-        stasjonID (int): ID of the relevant station
-        ukedag (string): The weekday in question
-    Returns:
-        String of train routes which stop at the station the given weekday.
+    Argumenter:
+        stasjonID (int)
+        ukedag (string)
+    Returnerer:
+        Streng med togrutene som stopper på stasjonen
     """
     with sql.connect('Jernbanenett.db') as con:
         cursor = con.cursor()

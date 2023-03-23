@@ -195,7 +195,7 @@ CREATE TABLE SitteBillett (
     CONSTRAINT SitteBillett_FK2 FOREIGN KEY(seteNR) REFERENCES Sete(seteNR)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    CONSTRAINT SitteBillett_FK3 FOREIGN KEY(forekomstID) REFERENCES Togruteforekomst(togruteForekomstID)
+    CONSTRAINT SitteBillett_FK3 FOREIGN KEY(togruteForekomstID) REFERENCES Togruteforekomst(togruteForekomstID)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
@@ -215,7 +215,7 @@ CREATE TABLE SoveBillett (
     CONSTRAINT SoveBillett_FK2 FOREIGN KEY(kupeNR) REFERENCES Kupe(kupeNR)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    CONSTRAINT SoveBillett_FK3 FOREIGN KEY(forekomstID) REFERENCES Togruteforekomst(togruteForekomstID)
+    CONSTRAINT SoveBillett_FK3 FOREIGN KEY(togruteForekomstID) REFERENCES Togruteforekomst(togruteForekomstID)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );

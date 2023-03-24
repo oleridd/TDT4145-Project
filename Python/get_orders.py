@@ -124,4 +124,4 @@ def get_all_tickets_for_person(kID: int):
 
     print(final_table)
 
-    return cursor.fetchall()
+    return final_table

@@ -108,7 +108,7 @@ CREATE TABLE Operator (
     CONSTRAINT Operator_PK PRIMARY KEY (operatorID)
 );
 
-CREATE TABLE VognTabel (
+CREATE TABLE VognTable (
     vognID          INTEGER,
     CONSTRAINT VognTable PRIMARY KEY (vognID)
 );
@@ -151,7 +151,7 @@ CREATE TABLE VognITog (
     togRuteID               INTEGER,
     vognNr                  INTEGER,
     CONSTRAINT VognITog_PK PRIMARY KEY (vognID, togRuteID),
-    CONSTRAINT VognITog_FK1 FOREIGN KEY (vognID) REFERENCES VognTabel(vognID)
+    CONSTRAINT VognITog_FK1 FOREIGN KEY (vognID) REFERENCES VognTable(vognID)
         ON  UPDATE CASCADE
         ON DELETE CASCADE,
     CONSTRAINT VognITog_FK2 FOREIGN KEY (togRuteID) REFERENCES Togrute(togRuteID)

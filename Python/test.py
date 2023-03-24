@@ -18,5 +18,5 @@ def test_registrer_kunde() -> None:
 
 def test_kjop_billett() -> None:
     # print(hent_ledige_billetter(4, "23/03/2023", strekninger=[2, 4]))
-    registrer_sittebillettkjop(2, 4, "23/03/2023", [3, 3], [7, 8], [6, 4])
-    registrer_sittebillettkjop()
+    registrer_sittebillettkjop(2, 4, "23/03/2023", [4, 4], [7, 8], [6, 4])
+    # registrer_sittebillettkjop()

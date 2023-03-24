@@ -8,8 +8,9 @@ def train_stop_at_station_on_day(station, day):
 
 
 def main():
-    # test_get_train_routes()
-    test_register_customer()
+    # test_hent_togruter()
+    # test_registrer_kunde()
+    test_kjop_billett()
 
 
 if __name__ == "__main__":

@@ -1,9 +1,9 @@
 import sqlite3 as sql
 import numpy as np
-from utility import get_smallest_elem_without_successor, is_member_of
+from utility import get_smallest_elem_without_successor, is_member_of, list_in
 
 
-def hent_ledige_billetter(togruteForekomstID: int, dato: str, strekninger: list[int]) -> tuple:
+def hent_ledige_billetter(togruteForekomstID: int, dato: str, strekninger: list[int] = None) -> tuple:
     """
     Henter ledige billetter for en gitt togruteforekomst.
     Siden det ikke er snakk om billettkjøp, er disse identifisert
@@ -18,7 +18,7 @@ def hent_ledige_billetter(togruteForekomstID: int, dato: str, strekninger: list[
         Liste av: (vognID, seteNr, delStrekningID)
               og: (vognID, kupeNr)
     """
-    # NOTE: Husk å passe på at ordreID for billetter er unikt
+    # NOTE: Må kanskje verifisere at togruteforekomst går på den gitte datoen
     with sql.connect("Jernbanenett.db") as con:
 
         # Sovebillett:
@@ -38,63 +38,59 @@ def hent_ledige_billetter(togruteForekomstID: int, dato: str, strekninger: list[
         sovebilletter = np.array(cursor.fetchall())
 
         # Sittebillett:
-        cursor = con.cursor()
-        cursor.execute("""
-            SELECT vognID, seteNr, delStrekningID  /* Alle seter på alle delstrekninger i den gitte togruteforekomsten */
-            FROM TogruteForekomst AS mainTF NATURAL JOIN VognITog
-                                            NATURAL JOIN Sete
-                                            CROSS   JOIN (
-                                                SELECT delStrekningID /* Alle delstrekninger på den gitte togruteforekomsten */
-                                                FROM TogruteForekomst AS delTF NATURAL JOIN Togrute
-                                                                               NATURAL JOIN StrekningPaaBanestrekning
-                                                WHERE delTF.togruteForekomstID = (:togruteForekomstID)
-                                            )
-            WHERE mainTF.togruteForekomstID = (:togruteForekomstID) AND (vognID, seteNr, delStrekningID) NOT IN (
-                SELECT vognID, seteNr, delStrekningID  /* Seter som er opptatt i den gitte togruteforekomsten */
-                FROM SitteBillett sb NATURAL JOIN SitteBillettPaaDelstrekning
-                WHERE sb.reiseDato = (:dato) AND sb.togruteForekomstID = (:togruteForekomstID)
+        if strekninger is not None: # None hvis vi kun ønsker sovebilletter
+            cursor = con.cursor()
+            cursor.execute("""
+                SELECT vognID, seteNr, delStrekningID  /* Alle seter på alle delstrekninger i den gitte togruteforekomsten */
+                FROM TogruteForekomst AS mainTF NATURAL JOIN VognITog
+                                                NATURAL JOIN Sete
+                                                CROSS   JOIN (
+                                                    SELECT delStrekningID /* Alle delstrekninger på den gitte togruteforekomsten */
+                                                    FROM TogruteForekomst AS delTF NATURAL JOIN Togrute
+                                                                                NATURAL JOIN StrekningPaaBanestrekning
+                                                    WHERE delTF.togruteForekomstID = (:togruteForekomstID)
+                                                )
+                WHERE mainTF.togruteForekomstID = (:togruteForekomstID) AND (vognID, seteNr, delStrekningID) NOT IN (
+                    SELECT vognID, seteNr, delStrekningID  /* Seter som er opptatt i den gitte togruteforekomsten */
+                    FROM SitteBillett sb NATURAL JOIN SitteBillettPaaDelstrekning
+                    WHERE sb.reiseDato = (:dato) AND sb.togruteForekomstID = (:togruteForekomstID)
+                )
+            """,
+            {'togruteForekomstID': togruteForekomstID, 'dato': dato}
             )
-        """,
-        {'togruteForekomstID': togruteForekomstID, 'dato': dato}
-        )
-        sittebilletter = np.array(cursor.fetchall())
+            sittebilletter = np.array(cursor.fetchall())
 
-    # Henter kun ut relevante delstrekninger:
-    sittebilletter = sittebilletter[
-        is_member_of(sittebilletter[:, 2], strekninger)
-    ]
+            # Henter kun ut relevante delstrekninger:
+            sittebilletter = sittebilletter[
+                is_member_of(sittebilletter[:, 2], strekninger)
+            ]
+        else: sittebilletter = None
 
     return sovebilletter, sittebilletter
 
 
 def registrer_sovebillettkjop(kID: int, togruteForekomstID: int, dato: str, vognID, kupeNR, antallSeng) -> None:
     """
-    Registrerer kjøp av sittebillett for en registrert kunde.
+    Registrerer kjøp av sovebillett for en registrert kunde.
 
     Argumenter:
         kID                 (int): Kunde ID
         togruteForekomstID  (int)
         dato             (string)
-        vognID (int or list[int])
-        seteNR (int or list[int])
-        strekninger   (list[int]): Delstrekninger som billetten går over
+        vognID              (int)
+        kupeNR              (int)
+        antallSeng          (int): Antall senger i kupeen
     Returnerer:
         None
     """
     # NOTE: Innfør logikk på å ta utgangspunkt i vognNr når man spør kunden
 
-    # Pass på riktig listestruktur:
-    if not isinstance(vognID, list): vognID = [vognID]
-    if not isinstance(kupeNR, list): kupeNR = [kupeNR]
-    assert len(vognID) == len(kupeNR)
-
     # Sjekk at billetten som skal bestilles er ledig:
     ledige_billetter, _ = hent_ledige_billetter(togruteForekomstID, dato)
     try:
-        for vID, sNR in zip(vognID, kupeNR):
-            assert np.array([vID, sNR]) in ledige_billetter
+        assert list_in([vognID, kupeNR], ledige_billetter)
     except AssertionError:
-        raise RuntimeError("Billetter på dette setet er allerede registrert")
+        raise RuntimeError("Billetter på dette setet er allerede registrert eller delstrekningen er ikke i togruten")
 
 
     with sql.connect("Jernbanenett.db") as con:
@@ -128,15 +124,14 @@ def registrer_sovebillettkjop(kID: int, togruteForekomstID: int, dato: str, vogn
         )
 
         # Insertering i SitteBillett og SittebillettPaaDelstrekning:
-        for i, (vID, sNR) in enumerate(zip(vognID, kupeNR)):
-            cursor = con.cursor()
-            cursor.execute("""
-                INSERT INTO SoveBillett
-                VALUES
-                ((:ordreID), (:billettNR), (:vognID), (:kupeNR), (:togruteForekomstID), (:dato), (:antallSeng));
-            """,
-            {'ordreID': ordreID, 'billettNR': i+1, 'vognID': vID, 'kupeNR': sNR, 'togruteForekomstID': togruteForekomstID, 'dato': dato, 'antallSeng': antallSeng}
-            )
+        cursor = con.cursor()
+        cursor.execute("""
+            INSERT INTO SoveBillett
+            VALUES
+            ((:ordreID), (:billettNR), (:vognID), (:kupeNR), (:togruteForekomstID), (:dato), (:antallSeng));
+        """,
+        {'ordreID': ordreID, 'billettNR': 1, 'vognID': vognID, 'kupeNR': kupeNR, 'togruteForekomstID': togruteForekomstID, 'dato': dato, 'antallSeng': antallSeng}
+        )
 
 
 def registrer_sittebillettkjop(kID: int, togruteForekomstID: int, dato: str, vognID, seteNR, strekninger) -> None:
@@ -165,7 +160,7 @@ def registrer_sittebillettkjop(kID: int, togruteForekomstID: int, dato: str, vog
     try:
         for vID, sNR in zip(vognID, seteNR):
             for delStrk in strekninger:
-                assert np.array([vID, sNR, delStrk]) in ledige_billetter
+                assert list_in([vID, sNR, delStrk], ledige_billetter)
     except AssertionError:
         raise RuntimeError("Billetter på dette setet er allerede registrert")
 

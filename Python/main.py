@@ -13,7 +13,6 @@ def main():
     # test_registrer_kunde()
     # #test_kjop_billett()
     test_UI()
-    get_orders.get_all_tickets_for_person(2)
     return
 
 

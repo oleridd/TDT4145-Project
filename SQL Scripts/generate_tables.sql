@@ -90,8 +90,9 @@ CREATE TABLE TogruteForekomst (
 CREATE TABLE StoppPaa (
 	togruteForekomstID		INTEGER,
 	stasjonID				INTEGER,
-	avgang					TIME,
 	ankomst					TIME,
+	avgang				    TIME,
+    dagNr                   INTEGER,
 	CONSTRAINT StoppPaa_PK PRIMARY KEY (togruteForekomstID, stasjonID),
 	CONSTRAINT StoppPaa_FK1 FOREIGN KEY (togruteForekomstID) REFERENCES Togruteforekomst(togruteForekomstID)
 		ON UPDATE CASCADE

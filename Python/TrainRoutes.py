@@ -52,15 +52,15 @@ class TrainRoutes:
                 and (tg1.ukedag = (:this_day) OR tg1.ukedag = (:next_day))
                 and sp1.stasjonID = (:startStasjonID)  and sp2.stasjonID = (:endeStasjonID)
                 ORDER BY 
-                    CASE
-                        WHEN tg1.ukedag = 'mandag' THEN 1
-                        WHEN tg1.ukedag = 'tirsdag' THEN 2
-                        WHEN tg1.ukedag = 'onsdag' THEN 3
-                        WHEN tg1.ukedag = 'torsdag' THEN 4
-                        WHEN tg1.ukedag = 'fredag' THEN 5
-                        WHEN tg1.ukedag = 'lørdag' THEN 6
-                        WHEN tg1.ukedag = 'søndag' THEN 7
-                    END ASC, sp1.dagNr, sp1.avgang           
+                CASE
+                    WHEN tg1.ukedag = 'søandag' THEN 1
+                    WHEN tg1.ukedag = 'mandag' THEN 2
+                    WHEN tg1.ukedag = 'tirsdag' THEN 3
+                    WHEN tg1.ukedag = 'onsdag' THEN 4
+                    WHEN tg1.ukedag = 'torsdag' THEN 5
+                    WHEN tg1.ukedag = 'fredag' THEN 6
+                    WHEN tg1.ukedag = 'lørdag' THEN 7
+	            END ASC, sp1.dagNr, sp1.avgang           
                 """,
                 {'this_day': this_day, 'next_day': next_day, 'time': time, "startStasjonID" : startStasjonID, "endeStasjonID" : endeStasjonID}
             )

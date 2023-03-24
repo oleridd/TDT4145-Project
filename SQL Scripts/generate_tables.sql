@@ -109,9 +109,9 @@ CREATE TABLE Operator (
     CONSTRAINT Operator_PK PRIMARY KEY (operatorID)
 );
 
-CREATE TABLE VognTabel (
+CREATE TABLE VognTable (
     vognID          INTEGER,
-    CONSTRAINT VognTabel PRIMARY KEY (vognID)
+    CONSTRAINT VognTable PRIMARY KEY (vognID)
 );
 
 CREATE TABLE SoveVogn (
@@ -119,7 +119,7 @@ CREATE TABLE SoveVogn (
     nKupe                  INTEGER,
     nSengPerKupe           INTEGER,
     CONSTRAINT SoveVogn_PK PRIMARY KEY (vognID),
-    CONSTRAINT SoveVogn_FK FOREIGN KEY (vognID) REFERENCES VognTabel(vognID)
+    CONSTRAINT SoveVogn_FK FOREIGN KEY (vognID) REFERENCES VognTable(vognID)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
@@ -129,7 +129,7 @@ CREATE TABLE SitteVogn (
     nRad                   INTEGER,
     nSeterPerKupe          INTEGER,
     CONSTRAINT SitteVogn_PK PRIMARY KEY (vognID),
-    CONSTRAINT SitteVong_FK FOREIGN KEY (vognID) REFERENCES VognTabel(vognID)
+    CONSTRAINT SitteVong_FK FOREIGN KEY (vognID) REFERENCES VognTable(vognID)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
@@ -152,7 +152,7 @@ CREATE TABLE VognITog (
     togRuteID               INTEGER,
     vognNr                  INTEGER,
     CONSTRAINT VognITog_PK PRIMARY KEY (vognID, togRuteID),
-    CONSTRAINT VognITog_FK1 FOREIGN KEY (vognID) REFERENCES VognTabel(vognID)
+    CONSTRAINT VognITog_FK1 FOREIGN KEY (vognID) REFERENCES VognTable(vognID)
         ON  UPDATE CASCADE
         ON DELETE CASCADE,
     CONSTRAINT VognITog_FK2 FOREIGN KEY (togRuteID) REFERENCES Togrute(togRuteID)
@@ -164,7 +164,6 @@ CREATE TABLE VognITog (
 CREATE TABLE Kupe (
     vognID              INTEGER,
     kupeNR              INTEGER,
-    antallSeng          INTEGER,
     CONSTRAINT Kupe_PK PRIMARY KEY (vognID, kupeNR),
     CONSTRAINT Kupe_FK FOREIGN KEY (vognID) REFERENCES SoveVogn(vognID)
         ON UPDATE CASCADE
@@ -176,7 +175,7 @@ CREATE TABLE Sete (
     vognID              INTEGER,
     seteNR              INTEGER,
     CONSTRAINT Sete_PK PRIMARY KEY (vognID, seteNR),
-    CONSTRAINT Sete_FK FOREIGN KEY (vognID) REFERENCES SoveVogn(vognID)
+    CONSTRAINT Sete_FK FOREIGN KEY (vognID) REFERENCES SitteVogn(vognID)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
@@ -193,7 +192,7 @@ CREATE TABLE SitteBillett (
     CONSTRAINT SitteBillett_FK1 FOREIGN KEY(vognID) REFERENCES SitteVogn(vognID)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    CONSTRAINT SitteBillett_FK2 FOREIGN KEY(seteNR) REFERENCES Sete(seteNR)
+    CONSTRAINT SitteBillett_FK2 FOREIGN KEY(vognID, seteNR) REFERENCES Sete(vognID, seteNR)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     CONSTRAINT SitteBillett_FK3 FOREIGN KEY(togruteForekomstID) REFERENCES Togruteforekomst(togruteForekomstID)
@@ -209,11 +208,12 @@ CREATE TABLE SoveBillett (
     kupeNR              INTEGER,
     togruteForekomstID  INTEGER,
 	Reisedato			DATE,
+    antallSeng          INT,
     CONSTRAINT SoveBillett_PK PRIMARY KEY(ordereID, billettNR),
     CONSTRAINT SoveBillett_FK1 FOREIGN KEY(vognID) REFERENCES SoveVogn(vognID)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    CONSTRAINT SoveBillett_FK2 FOREIGN KEY(kupeNR) REFERENCES Kupe(kupeNR)
+    CONSTRAINT SoveBillett_FK2 FOREIGN KEY(vognID, kupeNR) REFERENCES Kupe(vognID, kupeNR)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     CONSTRAINT SoveBillett_FK3 FOREIGN KEY(togruteForekomstID) REFERENCES Togruteforekomst(togruteForekomstID)
@@ -250,10 +250,7 @@ CREATE TABLE SitteBillettPaaDelStrekning (
     CONSTRAINT SitteBillettPaaDelStrekning_FK1 FOREIGN KEY (delStrekningID) REFERENCES Delstrekning(delStrekningID)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
-    CONSTRAINT SitteBillettPaaDelStrekning_FK2 FOREIGN KEY (ordereID) REFERENCES KundeOrdere(ordereID)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE,
-    CONSTRAINT SitteBillettPaaDelStrekning_FK3 FOREIGN KEY (billettNR) REFERENCES SitteBillett(billettNR)
+    CONSTRAINT SitteBillettPaaDelStrekning_FK2 FOREIGN KEY (ordereID, billettNR) REFERENCES SitteBillett(ordereID, billettNR)
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );

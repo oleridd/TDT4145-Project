@@ -11,7 +11,8 @@ def train_stop_at_station_on_day(station, day):
 def main():
     # test_hent_togruter()
     # test_registrer_kunde()
-    #test_kjop_billett()
+    # #test_kjop_billett()
+    test_UI()
     get_orders.get_all_tickets_for_person(2)
     return
 

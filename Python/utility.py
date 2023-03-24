@@ -15,7 +15,7 @@ def get_smallest_elem_without_successor(arr: np.ndarray) -> int:
             np.invert(arr[:-1] == (arr-1)[1:]), # Indexes elements without successors (except the last)
             [True]                              # Last element will never have a successor
         )
-        return arr[indicator].min()
+        return int(arr[indicator].min())
     
     return 0 # Array is empty
 
@@ -30,3 +30,14 @@ def is_member_of(arr: np.ndarray, lst: list) -> np.ndarray:
     for i, elem in enumerate(arr):
         result[i] = elem in lst
     return result
+
+
+def list_in(lst: list, arr:np.ndarray) -> bool:
+    """
+    Given a size n list and a (mxn) array, checks whether the
+    list is a member of arr.
+    """
+    for l in arr:
+        if lst == list(l):
+            return True
+    return False

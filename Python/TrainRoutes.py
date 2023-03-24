@@ -37,17 +37,21 @@ class TrainRoutes:
 
         with sql.connect('Jernbanenett.db') as con:
             cursor = con.cursor()
+            
+            # New not ready yet version
             cursor.execute("""
-                SELECT togruteForekomstID
-                FROM TogruteForekomst
-                WHERE togruteForekomstID IN (
-                    SELECT togruteForekomstID
-                    FROM TogruteForekomst NATURAL JOIN StoppPaa
-                    WHERE StoppPaa.stasjonID = (:startStasjonID) OR StoppPaa.stasjonID = (:endeStasjonID)
-                ) AS togruteStopp AND
-                /* Hvordan får man rikig rekkefølge på start- og endestasjon */
+                SELECT tg1.togruteForekomstID
+                FROM (TogruteForekomst AS tg1 INNER JOIN StoppPaa as sp1 on
+                tg1.togruteForekomstID = sp1.togruteForekomstID)
+                INNER JOIN 
+                (TogruteForekomst AS tg2 INNER JOIN StoppPaa as sp2 on
+                tg2.togruteForekomstID = sp2.togruteForekomstID)
+                ON tg1.togruteForekomstID = tg2.togruteForekomstID
+                WHERE ((time(sp1.avgang) <= time(sp2.ankomst) OR
+                (sp1.dagNr < sp2.dagNr))
+                and (tg1.ukedag = (:this_day) OR tg1.ukedag = (:next_day))
+                and sp1.stasjonID = (:startStasjonID)  and sp2.stasjonID = (:endeStasjonID) 
+                ORDER BY tg1.avgang           
                 """,
-                {'this_day': this_day, 'next_day': next_day, 'time': 'time'}
+                {'this_day': this_day, 'next_day': next_day, 'time': time, "startStasjonID" : startStasjonID, "endeStasjonID" : endeStasjonID}
             )
-            # WHERE (ukedag = (:this_day) AND CAST(StoppPaa.ankomst AS FLOAT) > cast((:time) AS FLOAT)) OR
-            # ukedag = (:next_day) AND StoppPaa.stasjonID = (:startStasjonID)

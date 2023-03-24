@@ -1,4 +1,5 @@
 import sqlite3 as sql
+import numpy as np
 
 def hent_togruter(stasjonID: int, ukedag: str) -> str:
     """
@@ -14,15 +15,16 @@ def hent_togruter(stasjonID: int, ukedag: str) -> str:
     with sql.connect('Jernbanenett.db') as con:
         cursor = con.cursor()
         cursor.execute("""
-            SELECT togruteForekomstID
-            FROM Stasjon NATURAL JOIN StoppPaa NATURAL JOIN TogruteForekomst
-            WHERE TogruteForekomst.ukedag = (:ukedag) AND StoppPaa.stasjonID = (:stasjonID)
-            UNION
-            SELECT togruteForekomstID
-            FROM TogruteForekomst
-            WHERE ukedag = (:ukedag) AND (startStasjonID = (:stasjonID) OR endestasjonID = (:stasjonID))
+            SELECT tf.togruteforekomstID
+            FROM TogruteForekomst AS tf INNER JOIN StoppPaa AS sp ON (tf.togruteforekomstID = sp.togruteforekomstID)
+            WHERE tf.ukedag = (:ukedag) AND sp.stasjonID = (:stasjonID)
         """,
         {'ukedag': ukedag, 'stasjonID': stasjonID}
         )
-    
-    return cursor.fetchall()
+
+    return np.array(cursor.fetchall()).flatten()
+
+# UNION
+# SELECT togruteForekomstID
+# FROM TogruteForekomst
+# WHERE ukedag = (:ukedag) AND (startStasjonID = (:stasjonID) OR endestasjonID = (:stasjonID))

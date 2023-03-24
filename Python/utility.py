@@ -41,3 +41,49 @@ def list_in(lst: list, arr:np.ndarray) -> bool:
         if lst == list(l):
             return True
     return False
+
+
+def get_valid_input(input_prompt: str, error_message: str, input_transform = None, valid_inputs: list = None, invalid_inputs: list = None) -> str:
+    """
+    Ensures and returns valid input from user.
+    Takes either valid inputs OR invalid inputs.
+
+    Args:
+        input_prompt       (string)
+        error_message      (string)
+        input_transform  (Callable): Potential transform of input
+        valid_inputs (list or type)
+        invalid      (list or type)
+    Returns:
+        input (string)
+    """
+    assert (valid_inputs is None) ^ (invalid_inputs is None)
+
+    input_is_valid = False
+    print(input_prompt)
+
+    while not input_is_valid:
+
+        user_in = input()
+        if not input_transform is None:
+            try:
+                user_in = input_transform(user_in)
+            except:
+                print(error_message)
+                continue
+        
+        # Checking instance:
+        if isinstance(valid_inputs, type) or isinstance(invalid_inputs, type):
+            if (valid_inputs is None and isinstance(user_in, invalid_inputs)) or (invalid_inputs is None and not isinstance(user_in, valid_inputs)):
+                print(error_message)
+            else:
+                input_is_valid = True
+        
+        # Checking membership:
+        else:
+            if (valid_inputs is None and user_in in invalid_inputs) or (invalid_inputs is None and not user_in in valid_inputs):
+                print(error_message)
+            else:
+                input_is_valid = True
+        
+    return user_in

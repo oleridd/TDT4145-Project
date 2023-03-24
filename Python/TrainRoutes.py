@@ -48,26 +48,9 @@ class TrainRoutes:
                 tg2.togruteForekomstID = sp2.togruteForekomstID)
                 ON tg1.togruteForekomstID = tg2.togruteForekomstID
                 WHERE (time(sp1.avgang) <= time(sp2.ankomst)
-	            OR (time(sp1.avgang) <= "23:59:59" and time(sp2.ankomst) > "00:00:00"))
                 and (tg1.ukedag = (:this_day) OR tg1.ukedag = (:next_day))
                 and sp1.stasjonID = (:startStasjonID)  and sp2.stasjonID = (:endeStasjonID) 
                 ORDER BY tg1.avgang           
                 """,
                 {'this_day': this_day, 'next_day': next_day, 'time': time, "startStasjonID" : startStasjonID, "endeStasjonID" : endeStasjonID}
             )
-            
-            # Old version
-            cursor.execute("""
-                SELECT togruteForekomstID
-                FROM TogruteForekomst
-                WHERE togruteForekomstID IN (
-                    SELECT togruteForekomstID
-                    FROM TogruteForekomst NATURAL JOIN StoppPaa
-                    WHERE StoppPaa.stasjonID = (:startStasjonID) OR StoppPaa.stasjonID = (:endeStasjonID)
-                ) AS togruteStopp AND
-                /* Hvordan får man rikig rekkefølge på start- og endestasjon */
-                """,
-                {'this_day': this_day, 'next_day': next_day, 'time': time, "startStasjonID" : startStasjonID, "endeStasjonID" : endeStasjonID}
-            )
-            # WHERE (ukedag = (:this_day) AND CAST(StoppPaa.ankomst AS FLOAT) > cast((:time) AS FLOAT)) OR
-            # ukedag = (:next_day) AND StoppPaa.stasjonID = (:startStasjonID)

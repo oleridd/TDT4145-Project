@@ -50,8 +50,17 @@ class TrainRoutes:
                 WHERE ((time(sp1.avgang) <= time(sp2.ankomst) OR
                 (sp1.dagNr < sp2.dagNr))
                 and (tg1.ukedag = (:this_day) OR tg1.ukedag = (:next_day))
-                and sp1.stasjonID = (:startStasjonID)  and sp2.stasjonID = (:endeStasjonID) 
-                ORDER BY tg1.avgang           
+                and sp1.stasjonID = (:startStasjonID)  and sp2.stasjonID = (:endeStasjonID)
+                ORDER BY 
+                    CASE
+                        WHEN tg1.ukedag = 'mandag' THEN 1
+                        WHEN tg1.ukedag = 'tirsdag' THEN 2
+                        WHEN tg1.ukedag = 'onsdag' THEN 3
+                        WHEN tg1.ukedag = 'torsdag' THEN 4
+                        WHEN tg1.ukedag = 'fredag' THEN 5
+                        WHEN tg1.ukedag = 'lørdag' THEN 6
+                        WHEN tg1.ukedag = 'søndag' THEN 7
+                    END ASC, sp1.dagNr, sp1.avgang           
                 """,
                 {'this_day': this_day, 'next_day': next_day, 'time': time, "startStasjonID" : startStasjonID, "endeStasjonID" : endeStasjonID}
             )

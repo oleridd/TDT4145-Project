@@ -207,6 +207,7 @@ CREATE TABLE SoveBillett (
     kupeNR              INTEGER,
     togruteForekomstID  INTEGER,
 	Reisedato			DATE,
+    antallSeng          INT,
     CONSTRAINT SoveBillett_PK PRIMARY KEY(ordereID, billettNR),
     CONSTRAINT SoveBillett_FK1 FOREIGN KEY(vognID) REFERENCES SoveVogn(vognID)
         ON UPDATE CASCADE

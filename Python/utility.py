@@ -15,7 +15,7 @@ def get_smallest_elem_without_successor(arr: np.ndarray) -> int:
             np.invert(arr[:-1] == (arr-1)[1:]), # Indexes elements without successors (except the last)
             [True]                              # Last element will never have a successor
         )
-        return arr[indicator].min()
+        return int(arr[indicator].min())
     
     return 0 # Array is empty
 

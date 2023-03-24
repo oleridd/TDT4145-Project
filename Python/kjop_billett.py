@@ -67,6 +67,78 @@ def hent_ledige_billetter(togruteForekomstID: int, dato: str, strekninger: list[
     return sovebilletter, sittebilletter
 
 
+def registrer_sovebillettkjop(kID: int, togruteForekomstID: int, dato: str, vognID, kupeNR, antallSeng) -> None:
+    """
+    Registrerer kjøp av sittebillett for en registrert kunde.
+
+    Argumenter:
+        kID                 (int): Kunde ID
+        togruteForekomstID  (int)
+        dato             (string)
+        vognID (int or list[int])
+        seteNR (int or list[int])
+        strekninger   (list[int]): Delstrekninger som billetten går over
+    Returnerer:
+        None
+    """
+    # NOTE: Innfør logikk på å ta utgangspunkt i vognNr når man spør kunden
+
+    # Pass på riktig listestruktur:
+    if not isinstance(vognID, list): vognID = [vognID]
+    if not isinstance(kupeNR, list): kupeNR = [kupeNR]
+    assert len(vognID) == len(kupeNR)
+
+    # Sjekk at billetten som skal bestilles er ledig:
+    ledige_billetter, _ = hent_ledige_billetter(togruteForekomstID, dato)
+    try:
+        for vID, sNR in zip(vognID, kupeNR):
+            assert np.array([vID, sNR]) in ledige_billetter
+    except AssertionError:
+        raise RuntimeError("Billetter på dette setet er allerede registrert")
+
+
+    with sql.connect("Jernbanenett.db") as con:
+
+        # Sjekker at kunden er registrert:
+        cursor = con.cursor()
+        cursor.execute("""
+            SELECT kID
+            FROM Kunde
+        """)
+        if not kID in np.array(cursor.fetchall()).flatten():
+            raise RuntimeError("Kunde er ikke registrert")
+
+        # Bestem unik ordreID:
+        cursor = con.cursor()
+        cursor.execute("""
+            SELECT ordereID
+            FROM KundeOrdere
+        """)
+        brukt_ordreID = np.array(cursor.fetchall())
+        ordreID = get_smallest_elem_without_successor(brukt_ordreID) + 1
+
+        # Insertering i KundeOrdre:
+        cursor = con.cursor()
+        cursor.execute("""
+            INSERT INTO KundeOrdere
+            VALUES
+            ((:ordreID), (:dato), (:kID));
+        """,
+        {'ordreID': ordreID, 'dato': dato, 'kID': kID}
+        )
+
+        # Insertering i SitteBillett og SittebillettPaaDelstrekning:
+        for i, (vID, sNR) in enumerate(zip(vognID, kupeNR)):
+            cursor = con.cursor()
+            cursor.execute("""
+                INSERT INTO SoveBillett
+                VALUES
+                ((:ordreID), (:billettNR), (:vognID), (:kupeNR), (:togruteForekomstID), (:dato), (:antallSeng));
+            """,
+            {'ordreID': ordreID, 'billettNR': i+1, 'vognID': vID, 'kupeNR': sNR, 'togruteForekomstID': togruteForekomstID, 'dato': dato, 'antallSeng': antallSeng}
+            )
+
+
 def registrer_sittebillettkjop(kID: int, togruteForekomstID: int, dato: str, vognID, seteNR, strekninger) -> None:
     """
     Registrerer kjøp av sittebillett for en registrert kunde.
@@ -117,7 +189,6 @@ def registrer_sittebillettkjop(kID: int, togruteForekomstID: int, dato: str, vog
         """)
         brukt_ordreID = np.array(cursor.fetchall())
         ordreID = get_smallest_elem_without_successor(brukt_ordreID) + 1
-        print(ordreID) # BUG: Det er noe galt med ordreID her, fikser i morgen
 
         # Insertering i KundeOrdre:
         cursor = con.cursor()

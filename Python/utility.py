@@ -1,4 +1,24 @@
 import numpy as np
+import datetime
+
+
+DATEMAP = {
+    0 : "mandag" ,
+    1 : "tirsdag",
+    2 : "onsdag" ,
+    3 : "torsdag",
+    4 : "fredag" ,
+    5 : "lørdag" ,
+    6 : "søndag"
+}
+
+def get_weekday_from_date(date: str) -> str:
+    """
+    Given a date string, returns weekday (in Norwegian)
+    """
+    dt = datetime.strptime(date, '%Y-%m-%d').date()
+    weekday_nr = dt.isoweekday()
+    return DATEMAP[weekday_nr-1]
 
 
 def get_smallest_elem_without_successor(arr: np.ndarray) -> int:

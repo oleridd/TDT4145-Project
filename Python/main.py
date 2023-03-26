@@ -11,10 +11,7 @@ def main():
     test_UI()
     # test_get_train_routes_at_date()
     # test_get_orders()
-<<<<<<< HEAD
-=======
-    sql_util.reset_database()
->>>>>>> e385fd1 (add UI for h)
+    # sql_util.reset_database()
 
 if __name__ == "__main__":
     

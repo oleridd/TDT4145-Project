@@ -1,12 +1,9 @@
 import numpy as np
 from logg_inn import hent_innloggingsinfo
 from utility import get_valid_input, get_weekday_from_date
-<<<<<<< HEAD
 from sql_util import hent_stasjonID, hent_alle_stasjonID, reset_database
-=======
 from sql_util import hent_stasjonID, hent_alle_stasjonID
 from get_orders import get_all_tickets_for_person
->>>>>>> e385fd1 (add UI for h)
 
 from hent_togruter   import hent_togruter, hent_togruteforekomst_info # Opt 1
 from TrainRoutes import get_train_routes_at_date                      # Opt 2

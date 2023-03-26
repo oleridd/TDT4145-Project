@@ -5,7 +5,7 @@ from utility import get_weekday_from_date, get_next_weekday_from_date
 import numpy as np
 from utility import *
       
-def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, endeStasjonID : int, id = False : bool) -> str:
+def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, endeStasjonID : int, id = False) -> str:
     """
     Given a date, a start station and a end station, 
     returns all train routes which are available that day.

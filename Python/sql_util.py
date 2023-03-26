@@ -44,7 +44,7 @@ def reset_database() -> None:
     with sql.connect("Jernbanenett.db") as con:
         cursor = con.cursor()
         
-        cursor.execute("""
+        cursor.executescript("""
 /* Delete datebase /*
 DROP TABLE Kupe;
 DROP TABLE Sete;

@@ -15,7 +15,7 @@ def get_all_tickets_for_person(kID: int):
             CREATE TEMPORARY TABLE my_table AS
             SELECT ordereID, dato
             FROM KundeOrdere
-            WHERE kID = (:kID) and dato < (:today); 
+            WHERE kID = (:kID) and dato >= (:today); 
         """,
         {'kID': kID, 'today': today}
         )
@@ -73,7 +73,7 @@ def get_all_tickets_for_person(kID: int):
             CREATE TEMPORARY TABLE my_table AS
             SELECT ordereID, dato
             FROM KundeOrdere
-            WHERE kID = (:kID) and dato < (:today); 
+            WHERE kID = (:kID) and dato >= (:today); 
         """,
         {'kID': kID, 'today': today}
         )

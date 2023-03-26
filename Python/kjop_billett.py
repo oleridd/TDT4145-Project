@@ -38,6 +38,7 @@ def hent_ledige_billetter(togruteForekomstID: int, dato: str, strekninger: list 
         sovebilletter = np.array(cursor.fetchall())
 
         # Sittebillett:
+        sittebilletter = None
         if strekninger is not None: # None hvis vi kun ønsker sovebilletter
             cursor = con.cursor()
             cursor.execute("""
@@ -52,7 +53,7 @@ def hent_ledige_billetter(togruteForekomstID: int, dato: str, strekninger: list 
                                                 )
                 WHERE mainTF.togruteForekomstID = (:togruteForekomstID) AND (vognID, seteNr, delStrekningID) NOT IN (
                     SELECT vognID, seteNr, delStrekningID  /* Seter som er opptatt i den gitte togruteforekomsten */
-                    FROM SitteBillett sb NATURAL JOIN SitteBillettPaaDelstrekning
+                    FROM SitteBillett AS sb NATURAL JOIN SitteBillettPaaDelstrekning
                     WHERE sb.reiseDato = (:dato) AND sb.togruteForekomstID = (:togruteForekomstID)
                 )
             """,
@@ -61,10 +62,10 @@ def hent_ledige_billetter(togruteForekomstID: int, dato: str, strekninger: list 
             sittebilletter = np.array(cursor.fetchall())
 
             # Henter kun ut relevante delstrekninger:
-            sittebilletter = sittebilletter[
-                is_member_of(sittebilletter[:, 2], strekninger)
-            ]
-        else: sittebilletter = None
+            if len(sittebilletter) > 0:
+                sittebilletter = sittebilletter[
+                    is_member_of(sittebilletter[:, 2], strekninger)
+                ]
 
     return sovebilletter, sittebilletter
 
@@ -80,7 +81,7 @@ def hent_vognNr(vognID: int) -> int:
             FROM VognITog
             WHERE vognID = (:vognID)
         """,
-        {'vognID': vognID}
+        {'vognID': int(vognID)}
         )
         vognNr = np.array(cursor.fetchall()).flatten()[0]
     

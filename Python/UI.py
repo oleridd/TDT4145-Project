@@ -51,8 +51,8 @@ def opt_1():
     )
 
     togruter = hent_togruter(stasjonID, ukedag)
-    for i, data in enumerate(togruter):
-        print(f"{i+1}.", "{} | Avgang fra {}: {} | Ankomst til {}: {} | Dato: ".format(*data))
+    for i, togruteforekomstID in enumerate(togruter):
+        print(f"{i+1}.", hent_generell_togruteforekomst_info(togruteforekomstID))
 
 
 

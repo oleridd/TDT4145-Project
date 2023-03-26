@@ -50,7 +50,7 @@ def opt_1():
         input_transform=lambda s: s.lower()
     )
 
-    togruter = hent_togruter2(stasjonID, ukedag)
+    togruter = hent_togruter(stasjonID, ukedag)
     for i, data in enumerate(togruter):
         print(f"{i+1}.", "{} | Avgang fra {}: {} | Ankomst til {}: {}".format(*data))
 

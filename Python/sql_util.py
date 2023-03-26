@@ -1,6 +1,6 @@
 import sqlite3 as sql
 import numpy as np
-
+from datetime import datetime
 
 def hent_alle_stasjonID() -> np.ndarray:
     """
@@ -37,11 +37,12 @@ def hent_stasjonID(stasjonnavn: str) -> int:
         return int(stasjonID[0])
 
 
-def hent_togruteforekomst_mellom_stasjoner(togruteforekomstID: int, startstasjonID: int, endestasjonID: int) -> str:
+def hent_togruteforekomst_mellom_stasjoner(togruteforekomstID: int, startstasjonID: int, endestasjonID: int, date : str) -> str:
     """
     Henter tidspunkt for en togruteforekomst startstasjon og endestasjon
     og returnerer det som en streng som kan printes.
     """
+    current_date = datetime.try_parsing_date(date)
     with sql.connect("Jernbanenett.db") as con:
         cursor = con.cursor()
         cursor.execute("""
@@ -66,7 +67,7 @@ def hent_togruteforekomst_mellom_stasjoner(togruteforekomstID: int, startstasjon
         )
         data_stop = np.array(cursor.fetchall()).flatten()
     
-    return "Avgang fra {}: {} | Ankomst til {}: {}".format(*np.concatenate((data_start, data_stop)))
+    return "Avgang fra {}: {} | Ankomst til {}: {} | Dato: {}".format(*np.concatenate((data_start, data_stop, np.array([current_date]))))
     
 
 def reset_database() -> None:

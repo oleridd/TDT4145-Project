@@ -29,16 +29,18 @@ def get_weekday_from_date(date: str) -> str:
     """
     Given a date string, returns weekday (in Norwegian)
     """
-    dt = try_parsing_date(date)
-    weekday_nr = dt.isoweekday()
+    if isinstance(date,str):
+        date = try_parsing_date(date)
+    weekday_nr = date.isoweekday()
     return DATEMAP[weekday_nr-1]
 
 def get_next_weekday_from_date(date: str) -> str:
     """
     Given a date string, returns next weekday (in Norwegian)
     """
-    dt = try_parsing_date(date)
-    weekday_nr = dt.isoweekday()
+    if isinstance(date,str):
+        date = try_parsing_date(date)
+    weekday_nr = date.isoweekday()
     return DATEMAP[weekday_nr % 7]
 
 

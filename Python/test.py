@@ -31,8 +31,8 @@ def test_UI():
         running = hovedmeny()
     
 def test_get_train_routes_at_date() -> None:
-    print(get_train_routes_at_date("2023-03-25", "01:00:00", startStasjonID= 6, endeStasjonID = 1))
-    print(get_train_routes_at_date("2023-03-28", "08:00:00", startStasjonID= 2, endeStasjonID = 4))
+    print(get_train_routes_at_date("25/03/2023", "01:00:00", startStasjonID= 6, endeStasjonID = 1))
+    print(get_train_routes_at_date("28/03/2023", "08:00:00", startStasjonID= 2, endeStasjonID = 4))
     
 
 def test_get_orders() -> None:

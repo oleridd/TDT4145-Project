@@ -15,14 +15,13 @@ def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, en
         endeStasjonID  (int): ID of the end station for the route
     Returns:
         String of train routes which is available at that given date and which
-        travels between the start and end station.
+        travels between the start and end station, ordered earliest to latest.
     """
     this_day, next_day = get_weekday_from_date(date), get_next_weekday_from_date(date)
 
     with sql.connect('Jernbanenett.db') as con:
         cursor = con.cursor()
         
-        # New not ready yet version
         cursor.execute("""
             SELECT tg1.togruteForekomstID
             FROM (TogruteForekomst AS tg1 INNER JOIN StoppPaa as sp1 on

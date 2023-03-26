@@ -73,7 +73,9 @@ def opt_2():
         input_transform=hent_stasjonID
     )
 
-    togruteforekomster = get_train_routes_at_date(dato, time, startStasjonID, endeStasjonID)
+    togruter = get_train_routes_at_date(dato, time, startStasjonID, endeStasjonID)
+    for i, togruteforekomstID in enumerate(togruter):
+        print(f"{i+1}.", hent_togruteforekomst_info(int(togruteforekomstID)))
 
 
 def opt_3():

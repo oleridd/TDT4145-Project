@@ -3,7 +3,7 @@ from datetime import datetime
 from utility import get_weekday_from_date, get_next_weekday_from_date
 import numpy as np
       
-def get_train_routes_at_date(date: str, time: str, startStasjonID : int, endeStasjonID : int) -> str:
+def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, endeStasjonID : int) -> str:
     """
     Given a date, a start station and a end station, 
     returns all train routes which are available that day.
@@ -31,10 +31,11 @@ def get_train_routes_at_date(date: str, time: str, startStasjonID : int, endeSta
             (TogruteForekomst AS tg2 INNER JOIN StoppPaa as sp2 on
             tg2.togruteForekomstID = sp2.togruteForekomstID)
             ON tg1.togruteForekomstID = tg2.togruteForekomstID
-            WHERE ((time(sp1.avgang) <= time(sp2.ankomst) OR
+            WHERE (time((:travel_at)) <= time(sp1.avgang) OR tg1.ukedag = (:next_day)) AND
+            ((time(sp1.avgang) <= time(sp2.ankomst) OR
             (sp1.dagNr < sp2.dagNr))
             and (tg1.ukedag = (:this_day) OR tg1.ukedag = (:next_day))
-            and sp1.stasjonID = (:startStasjonID)  and sp2.stasjonID = (:endeStasjonID)
+            and (sp1.stasjonID = (:startStasjonID)  and sp2.stasjonID = (:endeStasjonID)))
             ORDER BY 
             CASE
                 WHEN tg1.ukedag = 'søandag' THEN 1
@@ -46,7 +47,10 @@ def get_train_routes_at_date(date: str, time: str, startStasjonID : int, endeSta
                 WHEN tg1.ukedag = 'lørdag' THEN 7
             END ASC, sp1.dagNr, sp1.avgang           
             """,
-            {'this_day': this_day, 'next_day': next_day, 'time': time, "startStasjonID" : startStasjonID, "endeStasjonID" : endeStasjonID}
+            {'this_day': this_day, 'next_day': next_day, 'travel_at': travel_at, "startStasjonID" : startStasjonID, "endeStasjonID" : endeStasjonID}
         )
         togruter = np.array(cursor.fetchall())
         return togruter
+    
+print(get_train_routes_at_date("2023-03-27", "08:00:00", startStasjonID= 6, endeStasjonID = 1))
+printt(get_train_routes_at_date("2023-03-28", "08:00:00", startStasjonID= 2, endeStasjonID = 4))

@@ -1,7 +1,9 @@
 import numpy as np
 from logg_inn import hent_innloggingsinfo
 from utility import get_valid_input, get_weekday_from_date
-from sql_util import hent_stasjonID, hent_alle_stasjonID, reset_database, hent_togruteforekomst_mellom_stasjoner
+from sql_util import hent_stasjonID, hent_alle_stasjonID, reset_database
+from sql_util import hent_stasjonID, hent_alle_stasjonID
+from get_orders import get_all_tickets_for_person
 
 from hent_togruter   import hent_togruter, hent_generell_togruteforekomst_info # Opt 1
 from TrainRoutes import get_train_routes_at_date                               # Opt 2
@@ -75,10 +77,6 @@ def opt_2():
 
     togruteforekomster = get_train_routes_at_date(dato, time, startStasjonID, endeStasjonID)
 
-    print("Velg togruteforekomst:")
-    for i, togruteforekomstID in enumerate(togruteforekomster):
-        print(f"{i+1}. ", hent_togruteforekomst_mellom_stasjoner(togruteforekomstID, startStasjonID, endeStasjonID))
-
 
 def opt_3():
     """
@@ -135,6 +133,14 @@ def opt_5():
     Alternativ 5: Få informasjon om ordre og reiser
     """
     kID = logg_inn()
+
+    info = get_all_tickets_for_person(kID)
+
+    if(len(info) == 0):
+        print(f"Personen har ingen fremtidige billetter")
+
+    for i in range(len(info)):
+        print(f"{info[i][-1]} i vogn {info[i][0]} med plass nr.{info[i][1]} den {info[i][2]} fra: {info[i][3]} klokken {info[i][4]} til: {info[i][5]} klokken {info[i][6]}.")
 
 
 opts_functions = (opt_1, opt_2, opt_3, opt_4, opt_5, reset_database)

@@ -5,7 +5,6 @@ DROP TABLE SoveBillett;
 DROP TABLE SitteBillett;
 DROP TABLE SoveVogn;
 DROP TABLE SitteVogn;
-DROP TABLE VognTabel;
 DROP TABLE Kunde;
 DROP TABLE KundeOrdere;
 DROP TABLE StrekningPaaBanestrekning;

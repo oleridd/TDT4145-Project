@@ -7,7 +7,7 @@ def get_all_tickets_for_person(kID: int):
     Denne funksjonen returnerer en liste med lister hvor hver liste inneholder informasjon om en reise.
     """
 
-    today = datetime.today().strftime('%Y-%m-%d')
+    today = datetime.today().strftime('%d-%m-%Y')
     print(today)
     with sql.connect("Jernbanenett.db") as con:
         cursor = con.cursor() #Remember to change the limitation of date

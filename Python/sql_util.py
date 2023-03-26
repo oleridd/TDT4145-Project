@@ -44,6 +44,30 @@ def reset_database() -> None:
     with sql.connect("Jernbanenett.db") as con:
         cursor = con.cursor()
         cursor.execute("""
+DROP TABLE Kupe;
+DROP TABLE Sete;
+DROP TABLE OperatorHarVogn;
+DROP TABLE SoveBillett;
+DROP TABLE SitteBillett;
+DROP TABLE SoveVogn;
+DROP TABLE SitteVogn;
+DROP TABLE VognTabel;
+DROP TABLE Kunde;
+DROP TABLE KundeOrdere;
+DROP TABLE StrekningPaaBanestrekning;
+DROP TABLE TogruteForekomst;
+DROP TABLE VognITog;
+DROP TABLE banestrekning;
+DROP TABLE SitteBillettPaaDelStrekning;
+DROP TABLE delstrekning;
+DROP TABLE StoppPaa;
+DROP TABLE stasjon;
+DROP TABLE Togrute;
+DROP TABLE Operator;
+DROP TABLE VognTable;
+                       """)
+
+        cursor.execute("""
 /* Creation */
 CREATE TABLE Stasjon (
     stasjonID    INTEGER,

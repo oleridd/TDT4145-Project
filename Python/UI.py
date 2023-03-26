@@ -124,19 +124,20 @@ def opt_4():
         valid_inputs=str
     )
 
-    togruter = get_train_routes_at_date(dato, tid, startstasjonID, endestasjonID)
+    IDs, togruter = get_train_routes_at_date(dato, tid, startstasjonID, endestasjonID, ID=True)
     
     # Valg av togruteforekomst: 
     print("Velg togruteforekomst:")
-    for i, togruteforekomstID in enumerate(togruter):
-        print(f"{i+1}. ", hent_togruteforekomst_mellom_stasjoner(togruteforekomstID, startstasjonID, endestasjonID))
+    for i, data in enumerate(togruter):
+        print(f"{i+1}.", "Avgang fra {}: {} | Ankomst til {}: {} | Dato: {}".format(*data))
     
     togruteforekomstID = get_valid_input(
-        input_prompt="",
+        input_prompt="Skriv et tall for å indikere togruteforekomst: ",
         error_message=FEILMELDING,
-        input_transform=int,
-        valid_inputs=togruter
+        input_transform=lambda i: IDs[int(i)],
+        valid_inputs=IDs
     )
+
 
     # Henter ut relevante delstrekninger:
     banestrekningID = hent_banestrekning(togruteforekomstID)

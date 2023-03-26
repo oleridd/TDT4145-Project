@@ -1,6 +1,6 @@
 import numpy as np
 from logg_inn import hent_innloggingsinfo
-from utility import get_valid_input
+from utility import get_valid_input, get_weekday_from_date
 from sql_util import hent_stasjonID, hent_alle_stasjonID
 
 from hent_togruter   import hent_togruter, hent_togruteforekomst_info, hent_ankomsttid # Opt 1
@@ -92,8 +92,29 @@ def opt_4():
     Alternativ 4: Kjøp billett
     """
     kID  = logg_inn()
-    dato = get_valid_input("Avreisedato: ", FEILMELDING, valid_inputs=str)
-    
+
+    ukedag = get_valid_input(
+        "Avreisedato: ",
+        FEILMELDING,
+        input_transform=get_weekday_from_date,
+        valid_inputs=str
+    )
+
+    startstasjon = get_valid_input(
+        input_prompt="Fra: ",
+        error_message=FEILMELDING,
+        valid_inputs=hent_alle_stasjonID(),
+        input_transform=hent_stasjonID
+    )
+
+    endestasjon = get_valid_input(
+        input_prompt="Fra: ",
+        error_message=FEILMELDING,
+        valid_inputs=hent_alle_stasjonID(),
+        input_transform=hent_stasjonID
+    )
+
+
 
 
 def opt_5():

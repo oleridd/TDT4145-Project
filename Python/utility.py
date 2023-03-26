@@ -1,5 +1,5 @@
 import numpy as np
-from datetime import datetime 
+from datetime import datetime
 
 
 DATEMAP = {
@@ -12,11 +12,24 @@ DATEMAP = {
     6 : "søndag"
 }
 
+def try_parsing_date(text):
+    """
+    Retrieved from 
+    https://stackoverflow.com/questions/23581128/how-to-format-date-string-via-multiple-formats-in-python 
+    """
+    for fmt in ('%Y-%m-%d', '%d.%m.%Y', '%d/%m/%Y'):
+        try:
+            return datetime.strptime(text, fmt)
+        except ValueError:
+            pass
+    raise ValueError("Date input is invalid")
+
+
 def get_weekday_from_date(date: str) -> str:
     """
     Given a date string, returns weekday (in Norwegian)
     """
-    dt = datetime.strptime(date, '%Y-%m-%d').date()
+    dt = try_parsing_date(date)
     weekday_nr = dt.isoweekday()
     return DATEMAP[weekday_nr-1]
 
@@ -94,11 +107,11 @@ def get_valid_input(input_prompt: str, error_message: str, input_transform = Non
 
         user_in = input()
         if not input_transform is None:
-            try:
-                user_in = input_transform(user_in)
-            except:
-                print(error_message)
-                continue
+            # try:
+            user_in = input_transform(user_in)
+            # except:
+            #     print(error_message)
+            #     continue
         
         # Checking instance:
         if isinstance(valid_inputs, type) or isinstance(invalid_inputs, type):

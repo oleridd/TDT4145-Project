@@ -5,6 +5,7 @@ from kjop_billett import hent_ledige_billetter, registrer_sittebillettkjop, regi
 from UI import hovedmeny
 from TrainRoutes import get_train_routes_at_date
 import get_orders
+from sql_util import hent_delstrekninger_mellom_stasjoner
 
 def test_hent_togruter() -> None:
     print(
@@ -37,3 +38,12 @@ def test_get_train_routes_at_date() -> None:
 
 def test_get_orders() -> None:
     print(get_orders.get_all_tickets_for_person(2))
+
+
+def test_hent_delstrekninger_mellom_stasjoner():
+    startstasjon = 4 # Bodø
+    endestasjon = 1  # Mosjøen
+    baneStrekningID = 1
+    print(
+        hent_delstrekninger_mellom_stasjoner(baneStrekningID, startstasjon, endestasjon)
+    )

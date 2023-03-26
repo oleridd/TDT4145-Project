@@ -69,6 +69,61 @@ def hent_togruteforekomst_mellom_stasjoner(togruteforekomstID: int, startstasjon
     return "Avgang fra {}: {} | Ankomst til {}: {}".format(*np.concatenate((data_start, data_stop)))
     
 
+def hent_banestrekning(togruteforekomstID: int) -> int:
+    """
+    Gitt en togruteforekomst, henter ut banestrekningen.
+    """
+    with sql.connect("Jernbanenett.db") as con:
+        cursor = con.cursor()
+        cursor.execute("""
+            SELECT banestrekningID
+            FROM Togruteforekomst NATURAL JOIN Togrute
+            WHERE togruteforekomstID = (:togruteforekomstID)
+        """,
+        {'togruteforekomstID': togruteforekomstID}
+        )
+        banestrekningID = np.array(cursor.fetchall()).flatten()[0]
+    
+    return int(banestrekningID)
+
+
+def hent_delstrekninger_mellom_stasjoner(banestrekningID: int, startstasjon: int, endestasjon: int) -> np.ndarray:
+    """
+    Gitt en start- og en endestasjon, finner alle delstrekninger mellom disse
+    ved å sjekke hver eneste delstrekning.
+    Antagelse: Mellom to stasjoner langs en banestrekning, vil stasjonID
+    være strengt økende eller strengt minkende.
+    """
+    with sql.connect("Jernbanenett.db") as con:
+        cursor = con.cursor()
+        stasjon = startstasjon # Oppdaterende stasjon
+        delstrekningID = []    # Holder styr på delstrekninger
+        counter = 0
+        # Henter ut delstrekninger på gitt banestrekning der startStasjon = stasjon:
+        while stasjon != endestasjon:
+            cursor.execute("""
+                SELECT delStrekningID, endeStasjonID
+                FROM Delstrekning
+                WHERE startStasjonID = (:stasjon) AND delstrekningID IN (
+                    SELECT delStrekningID /* Kun delstrekninger på den gitte banestrekningen */
+                    FROM StrekningPaaBanestrekning NATURAL JOIN Banestrekning
+                    WHERE Banestrekning.baneStrekningID = (:banestrekningID)
+                )
+            """,
+            {'stasjon': stasjon, 'banestrekningID': banestrekningID}
+            )
+            result = np.array(cursor.fetchall())
+            delstrekning, ny_stasjon = result[0] # Kun ett resultat siden vi kun ser på en banestrekning
+            if np.abs(ny_stasjon - endestasjon) < np.abs(stasjon - endestasjon):
+                delstrekningID.append(delstrekning)
+                stasjon = int(ny_stasjon) # Oppdaterer stasjon hvis den er nærmere endestasjonen
+            
+            counter += 1
+            if counter > 250: raise RuntimeError("Banestrekning ikke gyldig")
+            
+    return delstrekningID
+
+
 def reset_database() -> None:
     """
     Resets the database

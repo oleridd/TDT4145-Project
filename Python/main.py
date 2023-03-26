@@ -8,10 +8,12 @@ def main():
     # test_hent_togruter()
     # test_registrer_kunde()
     # #test_kjop_billett()
-    test_UI()
+    # test_UI()
     # test_get_train_routes_at_date()
     # test_get_orders()
     # sql_util.reset_database()
+    test_hent_delstrekninger_mellom_stasjoner()
+
 
 if __name__ == "__main__":
     

@@ -69,6 +69,24 @@ def hent_ledige_billetter(togruteForekomstID: int, dato: str, strekninger: list 
     return sovebilletter, sittebilletter
 
 
+def hent_vognNr(vognID: int) -> int:
+    """
+    Gitt en vognID, henter ut vognnummer.
+    """
+    with sql.connect("Jernbanenett.db") as con:
+        cursor = con.cursor()
+        cursor.execute("""
+            SELECT vognNr
+            FROM VognITog
+            WHERE vognID = (:vognID)
+        """,
+        {'vognID': vognID}
+        )
+        vognNr = np.array(cursor.fetchall()).flatten()[0]
+    
+    return int(vognNr)
+
+
 def registrer_sovebillettkjop(kID: int, togruteForekomstID: int, dato: str, vognID, kupeNR, antallSeng) -> None:
     """
     Registrerer kjøp av sovebillett for en registrert kunde.

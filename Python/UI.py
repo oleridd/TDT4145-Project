@@ -1,13 +1,13 @@
 import numpy as np
 from logg_inn import hent_innloggingsinfo
 from utility import get_valid_input, get_weekday_from_date
-from sql_util import hent_stasjonID, hent_alle_stasjonID, reset_database
-from sql_util import hent_stasjonID, hent_alle_stasjonID
+from sql_util import hent_stasjonID, hent_alle_stasjonID, hent_banestrekning, hent_delstrekninger_mellom_stasjoner, reset_database
 from get_orders import get_all_tickets_for_person
 
 from hent_togruter   import hent_togruter, hent_generell_togruteforekomst_info # Opt 1
 from TrainRoutes import get_train_routes_at_date                               # Opt 2
 from registrer_kunde import registrer_kunde                                    # Opt 3
+from kjop_billett import hent_ledige_billetter, hent_vognNr                    # Opt 4
 
 FEILMELDING = "Ugyldig input"
 
@@ -95,20 +95,21 @@ def opt_4():
     """
     kID  = logg_inn()
 
+    # Henter ut togruter som stopper ved stasjonen ved bruk av kode i opt_2:
     dato = get_valid_input(
         "Avreisedato: ",
         FEILMELDING,
         valid_inputs=str
     )
 
-    startstasjon = get_valid_input(
+    startstasjonID = get_valid_input(
         input_prompt="Fra: ",
         error_message=FEILMELDING,
         valid_inputs=hent_alle_stasjonID(),
         input_transform=hent_stasjonID
     )
 
-    endestasjon = get_valid_input(
+    endestasjonID = get_valid_input(
         input_prompt="Til: ",
         error_message=FEILMELDING,
         valid_inputs=hent_alle_stasjonID(),
@@ -121,11 +122,37 @@ def opt_4():
         valid_inputs=str
     )
 
-    togruter = get_train_routes_at_date(dato, tid, startstasjon, endestasjon)
+    togruter = get_train_routes_at_date(dato, tid, startstasjonID, endestasjonID)
     
+    # Valg av togruteforekomst: 
     print("Velg togruteforekomst:")
     for i, togruteforekomstID in enumerate(togruter):
-        print(f"{i+1}. ", hent_togruteforekomst_mellom_stasjoner(togruteforekomstID, startstasjon, endestasjon))
+        print(f"{i+1}. ", hent_togruteforekomst_mellom_stasjoner(togruteforekomstID, startstasjonID, endestasjonID))
+    
+    togruteforekomstID = get_valid_input(
+        input_prompt="",
+        error_message=FEILMELDING,
+        input_transform=int,
+        valid_inputs=togruter
+    )
+
+    # Henter ut relevante delstrekninger:
+    banestrekningID = hent_banestrekning(togruteforekomstID)
+    delstrekninger = hent_delstrekninger_mellom_stasjoner(banestrekningID, startstasjonID, endestasjonID)
+    
+    # Printer ledige billetter:
+    ledige_sovebilletter, ledige_sittebilletter = hent_ledige_billetter(togruter, dato, delstrekninger)
+
+    print("Velg billett")
+    print("Sovebilletter:")
+    for i, (vognID, kupeNr) in enumerate(ledige_sovebilletter):
+        print(f"{i+1}. ", f"Vogn: {hent_vognNr(vognID)}, KupeNr: {kupeNr}")
+    
+    index_displacement = len(ledige_sovebilletter)
+    print("Sittebilletter:")
+    for i, (vognID, seteNr) in enumerate(ledige_sittebilletter):
+        print(f"{i+index_displacement+1}. ", f"Vogn: {hent_vognNr(vognID)}, SeteNr: {seteNr}")
+
 
 
 def opt_5():

@@ -1,6 +1,7 @@
 import sqlite3 as sql 
 from datetime import datetime
 from utility import get_weekday_from_date, get_next_weekday_from_date
+import numpy as np
       
 def get_train_routes_at_date(date: str, time: str, startStasjonID : int, endeStasjonID : int) -> str:
     """
@@ -47,3 +48,5 @@ def get_train_routes_at_date(date: str, time: str, startStasjonID : int, endeSta
             """,
             {'this_day': this_day, 'next_day': next_day, 'time': time, "startStasjonID" : startStasjonID, "endeStasjonID" : endeStasjonID}
         )
+        togruter = np.array(cursor.fetchall())
+        return togruter

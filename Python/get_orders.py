@@ -78,7 +78,7 @@ def get_all_tickets_for_person(kID: int):
         {'kID': kID, 'today': today}
         )
         cursor.execute("""
-            CREATE TEMPORARY TABLE fremtidige_sove_billetter AS
+            CREATE TEMPORARY TABLE fremtidig_sove_billetter AS
             SELECT billettNR, kupeNR, togruteForekomstID, dato
             FROM SoveBillett NATURAL JOIN my_table;
         """)

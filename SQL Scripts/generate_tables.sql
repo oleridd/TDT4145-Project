@@ -74,6 +74,7 @@ CREATE TABLE TogruteForekomst (
 	avgang				   TIME,
 	endeStasjonID		   INTEGER,
 	ankomst			       TIME,
+    erNattog               BOOLEAN, /* En dårlig løsning, se rapport */
     CONSTRAINT TogruteForekomst_PK1 PRIMARY KEY (togRuteForekomstID),
     CONSTRAINT TogruteForekomst_FK1 FOREIGN KEY (togRuteID) REFERENCES Togrute(togRuteID)
         ON UPDATE CASCADE
@@ -151,6 +152,7 @@ CREATE TABLE VognITog (
     vognID                  INTEGER,
     togRuteID               INTEGER,
     vognNr                  INTEGER,
+    erNattog                BOOLEAN,
     CONSTRAINT VognITog_PK PRIMARY KEY (vognID, togRuteID),
     CONSTRAINT VognITog_FK1 FOREIGN KEY (vognID) REFERENCES VognTable(vognID)
         ON  UPDATE CASCADE

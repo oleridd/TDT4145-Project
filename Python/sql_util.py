@@ -232,6 +232,7 @@ def reset_database() -> None:
                 avgang				   TIME,
                 endeStasjonID		   INTEGER,
                 ankomst			       TIME,
+                erNattog               BOOLEAN, /* En dårlig løsning, se rapport */
                 CONSTRAINT TogruteForekomst_PK1 PRIMARY KEY (togRuteForekomstID),
                 CONSTRAINT TogruteForekomst_FK1 FOREIGN KEY (togRuteID) REFERENCES Togrute(togRuteID)
                     ON UPDATE CASCADE
@@ -309,6 +310,7 @@ def reset_database() -> None:
                 vognID                  INTEGER,
                 togRuteID               INTEGER,
                 vognNr                  INTEGER,
+                erNattog                BOOLEAN,
                 CONSTRAINT VognITog_PK PRIMARY KEY (vognID, togRuteID),
                 CONSTRAINT VognITog_FK1 FOREIGN KEY (vognID) REFERENCES VognTable(vognID)
                     ON  UPDATE CASCADE
@@ -550,31 +552,31 @@ def reset_database() -> None:
 
             INSERT INTO VognITog 
             VALUES
-            (1, 2, 1),
-            (2, 2, 2), 
-            (3, 2, 1),
-            (5, 2, 2),
-            (4, 1, 1);
+            (1, 2, 1, 0),
+            (2, 2, 2, 0), 
+            (3, 2, 1, 1),
+            (5, 2, 2, 1),
+            (4, 1, 1, 0);
 
-            INSERT INTO TogruteForekomst (togruteForekomstID, togRuteID, ukedag, startStasjonID, avgang, endeStasjonID, ankomst)
+            INSERT INTO TogruteForekomst (togruteForekomstID, togRuteID, ukedag, startStasjonID, avgang, endeStasjonID, ankomst, erNattog)
             VALUES
-            (1, 2, "mandag", 6, '07:49:00', 1, '17:34:00'),
-            (2, 2, "tirsdag", 6, '07:49:00', 1, '17:34:00'),
-            (3, 2, "onsdag", 6, '07:49:00', 1, '17:34:00'),
-            (4, 2, "torsdag", 6, '07:49:00', 1, '17:34:00'),
-            (5, 2, "fredag", 6, '07:49:00', 1, '17:34:00'),
-            (6, 2, "mandag", 6, '23:05:00', 1, '09:05:00'),
-            (7, 2, "tirsdag", 6, '23:05:00', 1, '09:05:00'),
-            (8, 2, "onsdag", 6, '23:05:00', 1, '09:05:00'),
-            (9, 2, "torsdag", 6, '23:05:00', 1, '09:05:00'),
-            (10, 2, "fredag", 6, '23:05:00', 1, '09:05:00'),
-            (11, 2, "lørdag", 6, '23:05:00', 1, '09:05:00'),
-            (12, 2, "søndag", 6, '23:05:00', 1, '09:05:00'),
-            (13, 1, "mandag", 3, '08:11:00', 6, '14:13:00'),
-            (14, 1, "tirsdag", 3, '08:11:00', 6, '14:13:00'),
-            (15, 1, "onsdag", 3, '08:11:00', 6, '14:13:00'),
-            (16, 1, "torsdag", 3, '08:11:00', 6, '14:13:00'),
-            (17, 1, "fredag", 3, '08:11:00', 6, '14:13:00');
+            (1, 2, "mandag", 6, '07:49:00', 1, '17:34:00', 0),
+            (2, 2, "tirsdag", 6, '07:49:00', 1, '17:34:00', 0),
+            (3, 2, "onsdag", 6, '07:49:00', 1, '17:34:00', 0),
+            (4, 2, "torsdag", 6, '07:49:00', 1, '17:34:00', 0),
+            (5, 2, "fredag", 6, '07:49:00', 1, '17:34:00', 0),
+            (6, 2, "mandag", 6, '23:05:00', 1, '09:05:00', 1),
+            (7, 2, "tirsdag", 6, '23:05:00', 1, '09:05:00', 1),
+            (8, 2, "onsdag", 6, '23:05:00', 1, '09:05:00', 1),
+            (9, 2, "torsdag", 6, '23:05:00', 1, '09:05:00', 1),
+            (10, 2, "fredag", 6, '23:05:00', 1, '09:05:00', 1),
+            (11, 2, "lørdag", 6, '23:05:00', 1, '09:05:00', 1),
+            (12, 2, "søndag", 6, '23:05:00', 1, '09:05:00', 1),
+            (13, 1, "mandag", 3, '08:11:00', 6, '14:13:00', 0),
+            (14, 1, "tirsdag", 3, '08:11:00', 6, '14:13:00', 0),
+            (15, 1, "onsdag", 3, '08:11:00', 6, '14:13:00', 0),
+            (16, 1, "torsdag", 3, '08:11:00', 6, '14:13:00', 0),
+            (17, 1, "fredag", 3, '08:11:00', 6, '14:13:00', 0);
 
             INSERT INTO StoppPaa
             VALUES

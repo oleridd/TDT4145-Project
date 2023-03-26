@@ -123,7 +123,7 @@ def opt_4():
         valid_inputs=str
     )
 
-    IDs, togruter = get_train_routes_at_date(dato, tid, startstasjonID, endestasjonID, ID=True)
+    IDs, togruter = get_train_routes_at_date(dato, tid, startstasjonID, endestasjonID, id=True)
     
     # Valg av togruteforekomst: 
     print("Velg togruteforekomst:")
@@ -133,27 +133,33 @@ def opt_4():
     togruteforekomstID = get_valid_input(
         input_prompt="Skriv et tall for å indikere togruteforekomst: ",
         error_message=FEILMELDING,
-        input_transform=lambda i: IDs[int(i)],
+        input_transform=lambda i: IDs[int(i)-1],
         valid_inputs=IDs
     )
-
 
     # Henter ut relevante delstrekninger:
     banestrekningID = hent_banestrekning(togruteforekomstID)
     delstrekninger = hent_delstrekninger_mellom_stasjoner(banestrekningID, startstasjonID, endestasjonID)
-    
-    # Printer ledige billetter:
-    ledige_sovebilletter, ledige_sittebilletter = hent_ledige_billetter(togruter, dato, delstrekninger)
 
-    print("Velg billett")
+    # Printer ledige billetter:
+    ledige_sovebilletter, ledige_sittebilletter = hent_ledige_billetter(togruteforekomstID, dato, delstrekninger)
+
+    print("\nVelg billett")
     print("Sovebilletter:")
     for i, (vognID, kupeNr) in enumerate(ledige_sovebilletter):
-        print(f"{i+1}. ", f"Vogn: {hent_vognNr(vognID)}, KupeNr: {kupeNr}")
+        print(f"{i+1}. ", f"Vogn: {hent_vognNr(vognID)}, Kupe: {kupeNr}")
     
     index_displacement = len(ledige_sovebilletter)
     print("Sittebilletter:")
-    for i, (vognID, seteNr) in enumerate(ledige_sittebilletter):
-        print(f"{i+index_displacement+1}. ", f"Vogn: {hent_vognNr(vognID)}, SeteNr: {seteNr}")
+    for i, (vognID, seteNr) in enumerate(np.unique(ledige_sittebilletter[:, :2], axis=0)):
+        print(f"{i+index_displacement+1}. ", f"Vogn: {hent_vognNr(vognID)}, Sete: {seteNr}")
+    
+    billettvalg = get_valid_input(
+        input_prompt="Skriv et tall for å indikere billett: ",
+        error_message=FEILMELDING,
+        input_transform=int,
+        valid_inputs=range(len(ledige_sittebilletter) + len(ledige_sovebilletter) + 1)
+    )
 
 
 

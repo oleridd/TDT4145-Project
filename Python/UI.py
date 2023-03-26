@@ -137,6 +137,10 @@ def opt_5():
     kID = logg_inn()
 
     info = get_all_tickets_for_person(kID)
+
+    if(len(info) == 0):
+        print(f"Personen har ingen fremtidige billetter")
+
     for i in range(len(info)):
         print(f"{info[i][-1]} i vogn {info[i][0]} med plass nr.{info[i][1]} den {info[i][2]} fra: {info[i][3]} klokken {info[i][4]} til: {info[i][5]} klokken {info[i][6]}.")
 

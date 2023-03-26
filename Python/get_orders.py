@@ -58,10 +58,10 @@ def get_all_tickets_for_person(kID: int):
     #Legger til informasjon om sitte billetter i final_tabel
     final_table = []
     for i in range(int(len(my_table)/2)):
-        if(my_table[i][7] < my_table[2*i + 1][7] or my_table[i][4] < my_table[2*i + 1][4]):
-            final_table.append([my_table[i][0], my_table[i][1], my_table[i][4], my_table[i][5], my_table[i][7], my_table[2*i + 1][6], my_table[2*i + 1][10]])
+        if(my_table[2*i][7] < my_table[2*i + 1][7] or my_table[2*i][4] < my_table[2*i + 1][4]):
+            final_table.append([my_table[2*i][0], my_table[2*i][1], my_table[2*i][4], my_table[2*i][5], my_table[2*i][7], my_table[2*i + 1][6], my_table[2*i + 1][10]])
         else:
-            final_table.append([my_table[i][0], my_table[i][1], my_table[i][4], my_table[2*i + 1][5], my_table[2*i + 1][7], my_table[i][6], my_table[i][10]])
+            final_table.append([my_table[2*i][0], my_table[2*i][1], my_table[2*i][4], my_table[2*i + 1][5], my_table[2*i + 1][7], my_table[2*i][6], my_table[2*i][10]])
 
     
 

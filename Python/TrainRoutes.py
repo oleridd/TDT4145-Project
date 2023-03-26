@@ -26,7 +26,7 @@ def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, en
         cursor = con.cursor()
         
         cursor.execute("""
-            SELECT st1.navn, sp1.avgang, st2.navn, sp2.ankomst, tg1.ukedag, tg1.togruteForekostID
+            SELECT st1.navn, sp1.avgang, st2.navn, sp2.ankomst, tg1.ukedag, tg1.togruteForekomstID
             FROM (TogruteForekomst AS tg1 INNER JOIN (StoppPaa as sp1 NATURAL JOIN Stasjon AS st1) ON
             tg1.togruteForekomstID = sp1.togruteForekomstID)
             INNER JOIN 
@@ -50,7 +50,7 @@ def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, en
         togrute_id = list()
         for i in range(len(togruter)):
             togrute_list = list(togruter[i])
-            togrute_id[i] = togrute_list[5]
+            togrute_id.append(togrute_list[5])
             togruter[i] = togrute_list[:4]
         for i in range(len(togruter)):
             if togruter[i][4] == this_day:

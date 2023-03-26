@@ -3,7 +3,7 @@ from hent_togruter import hent_togruter
 from registrer_kunde import registrer_kunde
 from kjop_billett import hent_ledige_billetter, registrer_sittebillettkjop, registrer_sovebillettkjop
 from UI import hovedmeny
-
+from TrainRoutes import get_train_routes_at_date
 
 def test_hent_togruter() -> None:
     print(
@@ -26,3 +26,8 @@ def test_kjop_billett() -> None:
 
 def test_UI():
     hovedmeny()
+    
+def test_get_train_routes_at_date():
+    get_train_routes_at_date("2023-03-27", "08:00:00", startStasjonID= 6, endeStasjonID = 2)
+    get_train_routes_at_date("2023-03-28", "08:00:00", startStasjonID= 2, endeStasjonID = 4)
+    

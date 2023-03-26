@@ -1,7 +1,7 @@
 import sqlite3 as sql
 from hent_togruter import hent_togruter
 from registrer_kunde import registrer_kunde
-from kjop_billett import hent_ledige_billetter, registrer_sittebillettkjop, registrer_sovebillettkjop
+# from kjop_billett import hent_ledige_billetter, registrer_sittebillettkjop, registrer_sovebillettkjop
 from UI import hovedmeny
 from TrainRoutes import get_train_routes_at_date
 

@@ -1,11 +1,11 @@
 import numpy as np
 from logg_inn import hent_innloggingsinfo
 from utility import get_valid_input
-from sql_util import hent_stasjonID, hent_alle_stasjonID, hent_togruteforekomst_info
+from sql_util import hent_stasjonID, hent_alle_stasjonID
 
-from hent_togruter   import hent_togruter   # Opt 1
+from hent_togruter   import hent_togruter, hent_togruteforekomst_info, hent_ankomsttid # Opt 1
 from registrer_kunde import registrer_kunde # Opt 3
-from TrainRoutes import TrainRoutes
+import TrainRoutes
 
 FEILMELDING = "Ugyldig input"
 
@@ -50,8 +50,8 @@ def opt_1():
     )
 
     togruter = hent_togruter(stasjonID, ukedag)
-    for togruteforekomstID in togruter:
-        print(hent_togruteforekomst_info(int(togruteforekomstID)))
+    for i, togruteforekomstID in enumerate(togruter):
+        print(f"{i+1}.", hent_togruteforekomst_info(int(togruteforekomstID)))
 
 
 
@@ -93,7 +93,9 @@ def opt_4():
     """
     Alternativ 4: Kjøp billett
     """
-    kID = logg_inn()
+    kID  = logg_inn()
+    dato = get_valid_input("Avreisedato: ", FEILMELDING, valid_inputs=str)
+    
 
 
 def opt_5():

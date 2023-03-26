@@ -27,17 +27,16 @@ def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, en
         
         cursor.execute("""
             SELECT st1.navn, sp1.avgang, st2.navn, sp2.ankomst, tg1.ukedag, tg1.togruteForekomstID
-            FROM (TogruteForekomst AS tg1 INNER JOIN (StoppPaa as sp1 NATURAL JOIN Stasjon AS st1) ON
-            tg1.togruteForekomstID = sp1.togruteForekomstID)
+                FROM (TogruteForekomst AS tg1 INNER JOIN (StoppPaa as sp1 NATURAL JOIN Stasjon AS st1) ON
+                tg1.togruteForekomstID = sp1.togruteForekomstID)
             INNER JOIN 
-            (TogruteForekomst AS tg2 INNER JOIN (StoppPaa as sp2 NATURAL JOIN Stasjon AS st2) ON
-            tg2.togruteForekomstID = sp2.togruteForekomstID)
-            ON tg1.togruteForekomstID = tg2.togruteForekomstID
-            WHERE (time((:travel_at)) <= time(sp1.avgang) OR tg1.ukedag = (:next_day)) AND
-            ((time(sp1.avgang) <= time(sp2.ankomst) OR
-            (sp1.dagNr < sp2.dagNr))
-            and (tg1.ukedag = (:this_day) OR tg1.ukedag = (:next_day))
-            and (sp1.stasjonID = (:startStasjonID)  and sp2.stasjonID = (:endeStasjonID)))
+                (TogruteForekomst AS tg2 INNER JOIN (StoppPaa as sp2 NATURAL JOIN Stasjon AS st2) ON
+                tg2.togruteForekomstID = sp2.togruteForekomstID)
+                ON tg1.togruteForekomstID = tg2.togruteForekomstID
+            WHERE (time((:travel_at)) <= time(sp1.avgang) OR tg1.ukedag = (:next_day)) 
+            AND ((time(sp1.avgang) <= time(sp2.ankomst) OR (sp1.dagNr < sp2.dagNr))
+            AND (tg1.ukedag = (:this_day) OR tg1.ukedag = (:next_day))
+            AND (sp1.stasjonID = (:startStasjonID)  and sp2.stasjonID = (:endeStasjonID)))
             ORDER BY 
             CASE
                 WHEN tg1.ukedag = (:this_day) THEN 0

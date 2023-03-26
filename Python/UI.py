@@ -1,7 +1,7 @@
 import numpy as np
 from logg_inn import hent_innloggingsinfo
 from utility import get_valid_input, get_weekday_from_date
-from sql_util import hent_stasjonID, hent_alle_stasjonID
+from sql_util import hent_stasjonID, hent_alle_stasjonID, reset_database
 
 from hent_togruter   import hent_togruter, hent_togruteforekomst_info # Opt 1
 from TrainRoutes import get_train_routes_at_date                      # Opt 2
@@ -133,7 +133,7 @@ def opt_5():
     kID = logg_inn()
 
 
-opts_functions = (opt_1, opt_2, opt_3, opt_4, opt_5)
+opts_functions = (opt_1, opt_2, opt_3, opt_4, opt_5, reset_database)
 
 
 def hovedmeny() -> None:
@@ -150,12 +150,14 @@ def hovedmeny() -> None:
             3. Registrer deg som kunde
             4. Kjøp billett
             5. Få informasjon om ordre og reiser
+
+            6. Reset database
     """
 
     bruker_in = get_valid_input(
         input_prompt=input_prompt,
         error_message=FEILMELDING,
-        valid_inputs=('1', '2', '3', '4', '5')
+        valid_inputs=('1', '2', '3', '4', '5', '6')
     )
     
     opts_functions[int(bruker_in)-1]()

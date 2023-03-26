@@ -15,7 +15,7 @@ def get_all_tickets_for_person(kID: int):
             CREATE TEMPORARY TABLE my_table AS
             SELECT ordereID, dato
             FROM KundeOrdere
-            WHERE kID = (:kID) and dato < (:today); 
+            WHERE kID = (:kID) and dato >= (:today); 
         """,
         {'kID': kID, 'today': today}
         )
@@ -59,9 +59,9 @@ def get_all_tickets_for_person(kID: int):
     final_table = []
     for i in range(int(len(my_table)/2)):
         if(my_table[2*i][7] < my_table[2*i + 1][7] or my_table[2*i][4] < my_table[2*i + 1][4]):
-            final_table.append([my_table[2*i][0], my_table[2*i][1], my_table[2*i][4], my_table[2*i][5], my_table[2*i][7], my_table[2*i + 1][6], my_table[2*i + 1][10]])
+            final_table.append([my_table[2*i][0], my_table[2*i][1], my_table[2*i][4], my_table[2*i][5], my_table[2*i][7], my_table[2*i + 1][6], my_table[2*i + 1][10], "sitte billett"])
         else:
-            final_table.append([my_table[2*i][0], my_table[2*i][1], my_table[2*i][4], my_table[2*i + 1][5], my_table[2*i + 1][7], my_table[2*i][6], my_table[2*i][10]])
+            final_table.append([my_table[2*i][0], my_table[2*i][1], my_table[2*i][4], my_table[2*i + 1][5], my_table[2*i + 1][7], my_table[2*i][6], my_table[2*i][10], "sitte billett"])
 
     
 
@@ -73,12 +73,12 @@ def get_all_tickets_for_person(kID: int):
             CREATE TEMPORARY TABLE my_table AS
             SELECT ordereID, dato
             FROM KundeOrdere
-            WHERE kID = (:kID) and dato < (:today); 
+            WHERE kID = (:kID) and dato >= (:today); 
         """,
         {'kID': kID, 'today': today}
         )
         cursor.execute("""
-            CREATE TEMPORARY TABLE fremtidige_sove_billetter AS
+            CREATE TEMPORARY TABLE fremtidig_sove_billetter AS
             SELECT billettNR, kupeNR, togruteForekomstID, dato
             FROM SoveBillett NATURAL JOIN my_table;
         """)
@@ -94,6 +94,7 @@ def get_all_tickets_for_person(kID: int):
     my_table = [list(t) for t in my_table]
 
     for i in range(len(my_table)):
+        my_table[i].append("kupe billett")
         final_table.append(my_table[i])
 
     for i in range(len(final_table)):

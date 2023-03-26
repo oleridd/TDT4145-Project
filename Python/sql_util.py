@@ -45,7 +45,7 @@ def reset_database() -> None:
         cursor = con.cursor()
         
         cursor.executescript("""
-/* Delete datebase /*
+/* Delete datebase */
 DROP TABLE Kupe;
 DROP TABLE Sete;
 DROP TABLE OperatorHarVogn;

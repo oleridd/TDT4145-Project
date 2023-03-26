@@ -38,13 +38,8 @@ def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, en
             and (sp1.stasjonID = (:startStasjonID)  and sp2.stasjonID = (:endeStasjonID)))
             ORDER BY 
             CASE
-                WHEN tg1.ukedag = 'søndag' THEN 1
-                WHEN tg1.ukedag = 'mandag' THEN 2
-                WHEN tg1.ukedag = 'tirsdag' THEN 3
-                WHEN tg1.ukedag = 'onsdag' THEN 4
-                WHEN tg1.ukedag = 'torsdag' THEN 5
-                WHEN tg1.ukedag = 'fredag' THEN 6
-                WHEN tg1.ukedag = 'lørdag' THEN 7
+                WHEN tg1.ukedag = (:this_day) THEN 0
+                WHEN tg1.ukedag = (:next_day) THEN 1
             END ASC, sp1.dagNr, sp1.avgang           
             """,
             {'this_day': this_day, 'next_day': next_day, 'travel_at': travel_at, "startStasjonID" : startStasjonID, "endeStasjonID" : endeStasjonID}

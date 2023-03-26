@@ -51,7 +51,7 @@ def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, en
         for i in range(len(togruter)):
             togrute_list = list(togruter[i])
             togrute_id.append(togrute_list[5])
-            togruter[i] = togrute_list[:4]
+            togruter[i] = togrute_list[:5]
         for i in range(len(togruter)):
             if togruter[i][4] == this_day:
                 togruter[i][4] = str(date)

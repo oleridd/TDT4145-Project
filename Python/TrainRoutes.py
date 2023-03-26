@@ -35,7 +35,7 @@ def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, en
             ((time(sp1.avgang) <= time(sp2.ankomst) OR
             (sp1.dagNr < sp2.dagNr))
             and (tg1.ukedag = (:this_day) OR tg1.ukedag = (:next_day))
-            and sp1.stasjonID = (:startStasjonID)  and sp2.stasjonID = (:endeStasjonID)
+            and (sp1.stasjonID = (:startStasjonID)  and sp2.stasjonID = (:endeStasjonID)))
             ORDER BY 
             CASE
                 WHEN tg1.ukedag = 'søandag' THEN 1
@@ -51,3 +51,6 @@ def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, en
         )
         togruter = np.array(cursor.fetchall())
         return togruter
+    
+print(get_train_routes_at_date("2023-03-27", "08:00:00", startStasjonID= 6, endeStasjonID = 1))
+printt(get_train_routes_at_date("2023-03-28", "08:00:00", startStasjonID= 2, endeStasjonID = 4))

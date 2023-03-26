@@ -31,7 +31,7 @@ def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, en
             (TogruteForekomst AS tg2 INNER JOIN StoppPaa as sp2 on
             tg2.togruteForekomstID = sp2.togruteForekomstID)
             ON tg1.togruteForekomstID = tg2.togruteForekomstID
-            WHERE (travel_at <= time(sp1.avgang) OR tg1.ukedag = (:next_day)) AND
+            WHERE (time((:travel_at)) <= time(sp1.avgang) OR tg1.ukedag = (:next_day)) AND
             ((time(sp1.avgang) <= time(sp2.ankomst) OR
             (sp1.dagNr < sp2.dagNr))
             and (tg1.ukedag = (:this_day) OR tg1.ukedag = (:next_day))

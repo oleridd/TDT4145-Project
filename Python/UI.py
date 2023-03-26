@@ -5,6 +5,7 @@ from sql_util import hent_stasjonID, hent_alle_stasjonID, hent_togruteforekomst_
 
 from hent_togruter   import hent_togruter   # Opt 1
 from registrer_kunde import registrer_kunde # Opt 3
+from TrainRoutes import TrainRoutes
 
 FEILMELDING = "Ugyldig input"
 
@@ -58,7 +59,23 @@ def opt_2():
     """
     Alternativ 2: Søk togruter som går mellom start- og sluttstasjon
     """
-    pass
+    togruter = TrainRoutes()
+    
+    dato = get_valid_input("Dato: ", FEILMELDING, valid_inputs=str)
+    time = get_valid_input("Tid: ", FEILMELDING, valid_inputs=str)
+    startStasjonID = get_valid_input(
+        input_prompt="Start Stasjon: ",
+        error_message=FEILMELDING,
+        valid_inputs=hent_alle_stasjonID(),
+        input_transform=hent_stasjonID
+    )
+    endeStasjonID = get_valid_input(
+        input_prompt="Ende Stasjon: ",
+        error_message=FEILMELDING,
+        valid_inputs=hent_alle_stasjonID(),
+        input_transform=hent_stasjonID
+    )
+    togruter.get_train_routes_at_date(dato, time, startStasjonID, endeStasjonID)
 
 
 def opt_3():

@@ -4,7 +4,7 @@ from utility import get_valid_input, is_member_of
 from sql_util import hent_stasjonID, hent_alle_stasjonID, hent_banestrekning, hent_delstrekninger_mellom_stasjoner, reset_database
 from get_orders import get_all_tickets_for_person
 
-from hent_togruter   import hent_togruter, hent_generell_togruteforekomst_info # Opt 1
+from hent_togruter   import hent_togruter, hent_generell_togruteforekomst_info, hent_togruter2 # Opt 1
 from TrainRoutes import get_train_routes_at_date                               # Opt 2
 from registrer_kunde import registrer_kunde                                    # Opt 3
 from kjop_billett import hent_ledige_billetter, hent_vognNr, registrer_sittebillettkjop, registrer_sovebillettkjop # Opt 4
@@ -51,9 +51,8 @@ def opt_1():
     )
 
     togruter = hent_togruter(stasjonID, ukedag)
-    for i, togruteforekomstID in enumerate(togruter):
-        print(f"{i+1}.", hent_generell_togruteforekomst_info(togruteforekomstID))
-
+    for i, data in enumerate(togruter):
+        print(f"{i+1}.", "{} | Avgang fra {}: {} | Ankomst til {}: {}".format(*data))
 
 
 def opt_2():

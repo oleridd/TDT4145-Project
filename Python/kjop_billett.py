@@ -3,7 +3,7 @@ import numpy as np
 from utility import get_smallest_elem_without_successor, is_member_of, list_in
 
 
-def hent_ledige_billetter(togruteForekomstID: int, dato: str, strekninger: list[int] = None) -> tuple:
+def hent_ledige_billetter(togruteForekomstID: int, dato: str, strekninger: list = None) -> tuple:
     """
     Henter ledige billetter for en gitt togruteforekomst.
     Siden det ikke er snakk om billettkjøp, er disse identifisert

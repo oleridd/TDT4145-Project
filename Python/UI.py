@@ -72,7 +72,8 @@ def opt_2():
         valid_inputs=hent_alle_stasjonID(),
         input_transform=hent_stasjonID
     )
-    get_train_routes_at_date(dato, time, startStasjonID, endeStasjonID)
+
+    togruteforekomster = get_train_routes_at_date(dato, time, startStasjonID, endeStasjonID)
 
 
 def opt_3():
@@ -83,7 +84,7 @@ def opt_3():
     epost = get_valid_input("e-post: ", FEILMELDING, valid_inputs=str)
     tlf   = get_valid_input("Tlf: ",    FEILMELDING, valid_inputs=str)
     registrer_kunde(navn, epost, tlf)
-    print("Kunde registrer")
+    print("Kunde registrert")
 
 
 def opt_4():
@@ -119,7 +120,10 @@ def opt_4():
     )
 
     togruter = get_train_routes_at_date(dato, tid, startstasjon, endestasjon)
-    print(togruter)
+    
+    print("Velg togruteforekomst:")
+    for i, togruteforekomstID in enumerate(togruter):
+        print(f"{i+1}. ", hent_togruteforekomst_info(int(togruteforekomstID)))
 
 
 def opt_5():

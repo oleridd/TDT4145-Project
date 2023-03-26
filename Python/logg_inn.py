@@ -18,8 +18,8 @@ def hent_innloggingsinfo(bruker_in: str) -> int:
             FROM Kunde
         """)
         kunde_info = np.array(cursor.fetchall())
-    
-    if bruker_in not in kunde_info[:, 1:].flatten():
+
+    if len(kunde_info) == 0:
         return -1
     else:
         row_ind = np.any(bruker_in == kunde_info[:, 1:], axis=1)

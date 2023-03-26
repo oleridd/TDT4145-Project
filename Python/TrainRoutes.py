@@ -49,8 +49,5 @@ def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, en
             """,
             {'this_day': this_day, 'next_day': next_day, 'travel_at': travel_at, "startStasjonID" : startStasjonID, "endeStasjonID" : endeStasjonID}
         )
-        togruter = np.array(cursor.fetchall())
+        togruter = np.array(cursor.fetchall()).flatten()
         return togruter
-    
-print(get_train_routes_at_date("2023-03-27", "08:00:00", startStasjonID= 6, endeStasjonID = 1))
-printt(get_train_routes_at_date("2023-03-28", "08:00:00", startStasjonID= 2, endeStasjonID = 4))

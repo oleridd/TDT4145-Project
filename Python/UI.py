@@ -3,12 +3,11 @@ from logg_inn import hent_innloggingsinfo
 from utility import get_valid_input, get_weekday_from_date
 from sql_util import hent_stasjonID, hent_alle_stasjonID
 
-from hent_togruter   import hent_togruter, hent_togruteforekomst_info, hent_ankomsttid # Opt 1
-from registrer_kunde import registrer_kunde # Opt 3
-from TrainRoutes import get_train_routes_at_date
+from hent_togruter   import hent_togruter, hent_togruteforekomst_info # Opt 1
+from TrainRoutes import get_train_routes_at_date                      # Opt 2
+from registrer_kunde import registrer_kunde                           # Opt 3
 
 FEILMELDING = "Ugyldig input"
-
 
 def logg_inn() -> int:
     """
@@ -93,10 +92,9 @@ def opt_4():
     """
     kID  = logg_inn()
 
-    ukedag = get_valid_input(
+    dato = get_valid_input(
         "Avreisedato: ",
         FEILMELDING,
-        input_transform=get_weekday_from_date,
         valid_inputs=str
     )
 
@@ -108,13 +106,20 @@ def opt_4():
     )
 
     endestasjon = get_valid_input(
-        input_prompt="Fra: ",
+        input_prompt="Til: ",
         error_message=FEILMELDING,
         valid_inputs=hent_alle_stasjonID(),
         input_transform=hent_stasjonID
     )
 
+    tid = get_valid_input(
+        input_prompt="Avreise etter (tt:mm): ",
+        error_message=FEILMELDING,
+        valid_inputs=str
+    )
 
+    togruter = get_train_routes_at_date(dato, tid, startstasjon, endestasjon)
+    print(togruter)
 
 
 def opt_5():

@@ -19,7 +19,7 @@ def try_parsing_date(text):
     """
     for fmt in ('%Y-%m-%d', '%d.%m.%Y', '%d/%m/%Y'):
         try:
-            return datetime.strptime(text, fmt)
+            return datetime.strptime(text, fmt).date()
         except ValueError:
             pass
     raise ValueError("Date input is invalid")
@@ -37,7 +37,7 @@ def get_next_weekday_from_date(date: str) -> str:
     """
     Given a date string, returns next weekday (in Norwegian)
     """
-    dt = datetime.strptime(date, '%Y-%m-%d').date()
+    dt = try_parsing_date(date)
     weekday_nr = dt.isoweekday()
     return DATEMAP[weekday_nr % 7]
 

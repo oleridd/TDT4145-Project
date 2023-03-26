@@ -225,8 +225,8 @@ CREATE TABLE SoveBillett (
 CREATE TABLE Kunde (
     kID                 INTEGER,
     navn                TEXT,
-    epost               TEXT,
-    mobilnummer         INTEGER,
+    epost               TEXT UNIQUE,
+    mobilnummer         INTEGER UNIQUE,
     CONSTRAINT Kunde_PK PRIMARY KEY (kID)
 );
 

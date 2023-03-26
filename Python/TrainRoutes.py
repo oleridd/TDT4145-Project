@@ -5,7 +5,7 @@ from utility import get_weekday_from_date, get_next_weekday_from_date
 import numpy as np
 from utility import *
       
-def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, endeStasjonID : int) -> str:
+def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, endeStasjonID : int, id = False) -> str:
     """
     Given a date, a start station and a end station, 
     returns all train routes which are available that day.
@@ -26,7 +26,7 @@ def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, en
         cursor = con.cursor()
         
         cursor.execute("""
-            SELECT st1.navn, sp1.avgang, st2.navn, sp2.ankomst, tg1.ukedag
+            SELECT st1.navn, sp1.avgang, st2.navn, sp2.ankomst, tg1.ukedag, tg1.togruteForekostID
             FROM (TogruteForekomst AS tg1 INNER JOIN (StoppPaa as sp1 NATURAL JOIN Stasjon AS st1) ON
             tg1.togruteForekomstID = sp1.togruteForekomstID)
             INNER JOIN 
@@ -47,11 +47,17 @@ def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, en
             {'this_day': this_day, 'next_day': next_day, 'travel_at': travel_at, "startStasjonID" : startStasjonID, "endeStasjonID" : endeStasjonID}
         )
         togruter = list(cursor.fetchall())
+        togrute_id = list()
         for i in range(len(togruter)):
-            togruter[i] = list(togruter[i])
+            togrute_list = list(togruter[i])
+            togrute_id[i] = togrute_list[5]
+            togruter[i] = togrute_list[:4]
         for i in range(len(togruter)):
             if togruter[i][4] == this_day:
                 togruter[i][4] = str(date)
             else:
                 togruter[i][4] = str(next_date)
-        return np.array(togruter) 
+        if id:
+            return togrute_id, np.array(togruter)
+        else:
+            return np.array(togruter)

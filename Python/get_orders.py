@@ -112,7 +112,7 @@ def get_all_tickets_for_person(kID: int):
         cursor.execute("""
             SELECT navn
             FROM Stasjon
-            WHERE StasjonID = (:ende_stasjon)
+            WHERE stasjonID = (:ende_stasjon)
         """,
         {'ende_stasjon': ende_stasjon}
         )

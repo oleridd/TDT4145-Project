@@ -46,27 +46,26 @@ def reset_database() -> None:
 
         cursor.executescript("""
             /* Delete datebase */
-            DROP TABLE Kupe IF EXISTS Kupe;
-            DROP TABLE Sete IF EXISTS Sete;
-            DROP TABLE OperatorHarVogn IF EXISTS OperatorHarVogn;
-            DROP TABLE SoveBillett IF EXISTS Sovebillett;
-            DROP TABLE SitteBillett IF EXISTS Sittebillett;
-            DROP TABLE SoveVogn IF EXISTS SoveVogn;
-            DROP TABLE SitteVogn IF EXISTS SitteVogn;
-            DROP TABLE VognTable IF EXISTS VognTable;
-            DROP TABLE Kunde IF EXISTS Kunde;
-            DROP TABLE KundeOrdre IF EXISTS KundeOrdere;
-            DROP TABLE StrekningPaaBanestrekning IF EXISTS StrekningPaaBanestrekning;
-            DROP TABLE TogruteForekomst IF EXISTS TogruteForekomst;
-            DROP TABLE VognITog IF EXISTS VognITog;
-            DROP TABLE Banestrekning IF EXISTS Banestrekning;
-            DROP TABLE SitteBillettPaaDelStrekning IF EXISTS SitteBillettPaaDelstrekning;
-            DROP TABLE Delstrekning IF EXISTS Delstrekning;
-            DROP TABLE StoppPaa IF EXISTS StoppPaa;
-            DROP TABLE Stasjon IF EXISTS Stasjon;
-            DROP TABLE Togrute IF EXISTS Togrute;
-            DROP TABLE Operator IF EXISTS Operator;
-            DROP TABLE VognTable IF EXISTS VognTable;
+            DROP TABLE Kupe;
+            DROP TABLE Sete;
+            DROP TABLE OperatorHarVogn;
+            DROP TABLE SoveBillett;
+            DROP TABLE SitteBillett;
+            DROP TABLE SoveVogn;
+            DROP TABLE SitteVogn;
+            DROP TABLE VognTable;
+            DROP TABLE Kunde;
+            DROP TABLE KundeOrdere;
+            DROP TABLE StrekningPaaBanestrekning;
+            DROP TABLE TogruteForekomst;
+            DROP TABLE VognITog;
+            DROP TABLE Banestrekning;
+            DROP TABLE SitteBillettPaaDelStrekning;
+            DROP TABLE Delstrekning;
+            DROP TABLE StoppPaa;
+            DROP TABLE Stasjon;
+            DROP TABLE Togrute;
+            DROP TABLE Operator;
 
             /* Creation */
             CREATE TABLE Stasjon (

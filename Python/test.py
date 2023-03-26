@@ -27,7 +27,7 @@ def test_kjop_billett() -> None:
 def test_UI():
     hovedmeny()
     
-def test_get_train_routes_at_date():
-    get_train_routes_at_date("2023-03-27", "08:00:00", startStasjonID= 6, endeStasjonID = 2)
+def test_get_train_routes_at_date() -> None:
+    get_train_routes_at_date("2023-03-27", "08:00:00", startStasjonID= 6, endeStasjonID = 1)
     get_train_routes_at_date("2023-03-28", "08:00:00", startStasjonID= 2, endeStasjonID = 4)
     

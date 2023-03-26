@@ -43,7 +43,9 @@ def reset_database() -> None:
     """
     with sql.connect("Jernbanenett.db") as con:
         cursor = con.cursor()
+        
         cursor.execute("""
+/* Delete datebase /*
 DROP TABLE Kupe;
 DROP TABLE Sete;
 DROP TABLE OperatorHarVogn;
@@ -65,9 +67,7 @@ DROP TABLE stasjon;
 DROP TABLE Togrute;
 DROP TABLE Operator;
 DROP TABLE VognTable;
-                       """)
 
-        cursor.execute("""
 /* Creation */
 CREATE TABLE Stasjon (
     stasjonID    INTEGER,

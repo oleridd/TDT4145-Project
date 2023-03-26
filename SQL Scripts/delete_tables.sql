@@ -18,6 +18,5 @@ DROP TABLE StoppPaa;
 DROP TABLE stasjon;
 DROP TABLE Togrute;
 DROP TABLE Operator;
-DROP TABLE Kunde;
 DROP TABLE KundeOrdere;
-DROP TABLE VognTabel
+DROP TABLE VognTable;

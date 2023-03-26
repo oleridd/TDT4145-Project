@@ -102,7 +102,6 @@ def opt_4():
         FEILMELDING,
         valid_inputs=str
     )
-    print(dato)
 
     startstasjonID = get_valid_input(
         input_prompt="Fra: ",
@@ -152,14 +151,12 @@ def opt_4():
     
     index_displacement = len(ledige_sovebilletter)
     print("Sittebilletter:")
-    print(ledige_sittebilletter, "\n", delstrekninger)
     sittebilletter_for_valg = np.unique(ledige_sittebilletter[:, :2], axis=0)
     for i, (vognID, seteNr) in enumerate(sittebilletter_for_valg):
         print(f"{i+index_displacement+1}. ", f"Vogn: {hent_vognNr(vognID)}, Sete: {seteNr}")
     
     # Valg av billett
     billettvalg = get_valid_input(
-        input_prompt=f"Skriv et tall for å indikere billett nr. {i+1} (skriv 0 for å gå videre): ",
         error_message=FEILMELDING,
         input_transform=lambda i: int(i)-1,
         valid_inputs=range(-1, len(ledige_sittebilletter) + len(ledige_sovebilletter))
@@ -178,6 +175,8 @@ def opt_4():
     else:
         vognID, seteNr = [int(el) for el in sittebilletter_for_valg[billettvalg-index_displacement]]
         registrer_sittebillettkjop(kID, togruteforekomstID, dato, vognID, seteNr, delstrekninger)
+    
+    print("Billett registrert")
 
 
 def opt_5():

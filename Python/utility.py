@@ -1,5 +1,5 @@
 import numpy as np
-import datetime
+from datetime import datetime 
 
 
 DATEMAP = {
@@ -19,6 +19,14 @@ def get_weekday_from_date(date: str) -> str:
     dt = datetime.strptime(date, '%Y-%m-%d').date()
     weekday_nr = dt.isoweekday()
     return DATEMAP[weekday_nr-1]
+
+def get_next_weekday_from_date(date: str) -> str:
+    """
+    Given a date string, returns next weekday (in Norwegian)
+    """
+    dt = datetime.strptime(date, '%Y-%m-%d').date()
+    weekday_nr = dt.isoweekday()
+    return DATEMAP[weekday_nr % 7]
 
 
 def get_smallest_elem_without_successor(arr: np.ndarray) -> int:

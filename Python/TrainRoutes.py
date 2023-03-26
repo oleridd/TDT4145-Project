@@ -1,7 +1,9 @@
 import sqlite3 as sql 
 from datetime import datetime
+from datetime import timedelta
 from utility import get_weekday_from_date, get_next_weekday_from_date
 import numpy as np
+from utility import *
       
 def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, endeStasjonID : int) -> str:
     """
@@ -17,17 +19,18 @@ def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, en
         String of train routes which is available at that given date and which
         travels between the start and end station, ordered earliest to latest.
     """
+    date = try_parsing_date(date)
+    next_date = date + timedelta(days = 1)
     this_day, next_day = get_weekday_from_date(date), get_next_weekday_from_date(date)
-
     with sql.connect('Jernbanenett.db') as con:
         cursor = con.cursor()
         
         cursor.execute("""
-            SELECT tg1.togruteForekomstID
-            FROM (TogruteForekomst AS tg1 INNER JOIN StoppPaa as sp1 on
+            SELECT st1.navn, sp1.avgang, st2.navn, sp2.ankomst, tg1.ukedag
+            FROM (TogruteForekomst AS tg1 INNER JOIN (StoppPaa as sp1 NATURAL JOIN Stasjon AS st1) ON
             tg1.togruteForekomstID = sp1.togruteForekomstID)
             INNER JOIN 
-            (TogruteForekomst AS tg2 INNER JOIN StoppPaa as sp2 on
+            (TogruteForekomst AS tg2 INNER JOIN (StoppPaa as sp2 NATURAL JOIN Stasjon AS st2) ON
             tg2.togruteForekomstID = sp2.togruteForekomstID)
             ON tg1.togruteForekomstID = tg2.togruteForekomstID
             WHERE (time((:travel_at)) <= time(sp1.avgang) OR tg1.ukedag = (:next_day)) AND
@@ -43,5 +46,12 @@ def get_train_routes_at_date(date: str, travel_at: str, startStasjonID : int, en
             """,
             {'this_day': this_day, 'next_day': next_day, 'travel_at': travel_at, "startStasjonID" : startStasjonID, "endeStasjonID" : endeStasjonID}
         )
-        togruter = np.array(cursor.fetchall()).flatten()
-        return togruter
+        togruter = list(cursor.fetchall())
+        for i in range(len(togruter)):
+            togruter[i] = list(togruter[i])
+        for i in range(len(togruter)):
+            if togruter[i][4] == this_day:
+                togruter[i][4] = str(date)
+            else:
+                togruter[i][4] = str(next_date)
+        return np.array(togruter) 

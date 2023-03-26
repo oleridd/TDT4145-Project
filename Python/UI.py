@@ -51,8 +51,8 @@ def opt_1():
     )
 
     togruter = hent_togruter(stasjonID, ukedag)
-    for i, togruteforekomstID in enumerate(togruter):
-        print(f"{i+1}.", hent_generell_togruteforekomst_info(int(togruteforekomstID)))
+    for i, data in enumerate(togruter):
+        print(f"{i+1}.", "{} | Avgang fra {}: {} | Ankomst til {}: {} | Dato: ".format(*data))
 
 
 
@@ -75,7 +75,9 @@ def opt_2():
         input_transform=hent_stasjonID
     )
 
-    togruteforekomster = get_train_routes_at_date(dato, time, startStasjonID, endeStasjonID)
+    togruter = get_train_routes_at_date(dato, time, startStasjonID, endeStasjonID)
+    for i, data in enumerate(togruter):
+        print(f"{i+1}.", "Avgang fra {}: {} | Ankomst til {}: {} | Dato: {}".format(*data))
 
 
 def opt_3():
@@ -162,10 +164,6 @@ def opt_5():
     kID = logg_inn()
 
     info = get_all_tickets_for_person(kID)
-
-    if(len(info) == 0):
-        print(f"Personen har ingen fremtidige billetter")
-
     for i in range(len(info)):
         print(f"{info[i][-1]} i vogn {info[i][0]} med plass nr.{info[i][1]} den {info[i][2]} fra: {info[i][3]} klokken {info[i][4]} til: {info[i][5]} klokken {info[i][6]}.")
 
@@ -194,12 +192,7 @@ def hovedmeny() -> None:
     bruker_in = get_valid_input(
         input_prompt=input_prompt,
         error_message=FEILMELDING,
-        valid_inputs=(valid_inputs:=('1', '2', '3', '4', '5', '6', 'stop', 'stopp', 'end', 'exit'))
+        valid_inputs=('1', '2', '3', '4', '5', '6')
     )
     
-    if bruker_in in valid_inputs[6:]:
-        return False
-
     opts_functions[int(bruker_in)-1]()
-
-    return True

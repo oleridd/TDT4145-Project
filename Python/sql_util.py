@@ -35,6 +35,38 @@ def hent_stasjonID(stasjonnavn: str) -> int:
         raise RuntimeError("Fant ikke unik stasjon")
     else: 
         return int(stasjonID[0])
+
+
+def hent_togruteforekomst_mellom_stasjoner(togruteforekomstID: int, startstasjonID: int, endestasjonID: int) -> str:
+    """
+    Henter tidspunkt for en togruteforekomst startstasjon og endestasjon
+    og returnerer det som en streng som kan printes.
+    """
+    with sql.connect("Jernbanenett.db") as con:
+        cursor = con.cursor()
+        cursor.execute("""
+            SELECT startstasjon.navn, SP.avgang
+            FROM Togruteforekomst AS TF INNER JOIN StoppPaa AS SP ON (TF.togruteforekomstID = SP.togruteforekomstID)
+                                        NATURAL JOIN Stasjon AS startstasjon
+            WHERE TF.togruteforekomstID = (:togruteforekomstID) AND
+                  startstasjon.stasjonID = (:startstasjonID)
+        """,
+        {'togruteforekomstID': int(togruteforekomstID), 'startstasjonID': int(startstasjonID)}
+        )
+        data_start = np.array(cursor.fetchall()).flatten()
+
+        cursor.execute("""
+            SELECT endestasjon.navn, SP.ankomst
+            FROM Togruteforekomst AS TF INNER JOIN StoppPaa AS SP ON (TF.togruteforekomstID = SP.togruteforekomstID)
+                                        NATURAL JOIN Stasjon AS endestasjon
+            WHERE TF.togruteforekomstID = (:togruteforekomstID) AND
+                  endestasjon.stasjonID = (:endestasjonID)
+        """,
+        {'togruteforekomstID': int(togruteforekomstID), 'endestasjonID': int(endestasjonID)}
+        )
+        data_stop = np.array(cursor.fetchall()).flatten()
+    
+    return "Avgang fra {}: {} | Ankomst til {}: {}".format(*np.concatenate((data_start, data_stop)))
     
 
 def reset_database() -> None:

@@ -26,7 +26,9 @@ def test_kjop_billett() -> None:
 
 
 def test_UI():
-    hovedmeny()
+    running = True
+    while running:
+        running = hovedmeny()
     
 def test_get_train_routes_at_date() -> None:
     print(get_train_routes_at_date("2023-03-25", "01:00:00", startStasjonID= 6, endeStasjonID = 1))

@@ -25,7 +25,7 @@ def hent_togruter(stasjonID: int, ukedag: str) -> str:
     return np.array(cursor.fetchall()).flatten()
 
 
-def hent_togruteforekomst_info(togruteforekomstID: int) -> str:
+def hent_generell_togruteforekomst_info(togruteforekomstID: int) -> str:
     """
     Gitt en togruteforekomstID, henter info på formen:
     (Banestrekning, avgang (startstasjon), ankomst (endestasjon))

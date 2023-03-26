@@ -1,13 +1,13 @@
 import numpy as np
 from logg_inn import hent_innloggingsinfo
-from utility import get_valid_input, get_weekday_from_date
+from utility import get_valid_input, is_member_of
 from sql_util import hent_stasjonID, hent_alle_stasjonID, hent_banestrekning, hent_delstrekninger_mellom_stasjoner, reset_database
 from get_orders import get_all_tickets_for_person
 
 from hent_togruter   import hent_togruter, hent_generell_togruteforekomst_info # Opt 1
 from TrainRoutes import get_train_routes_at_date                               # Opt 2
 from registrer_kunde import registrer_kunde                                    # Opt 3
-from kjop_billett import hent_ledige_billetter, hent_vognNr                    # Opt 4
+from kjop_billett import hent_ledige_billetter, hent_vognNr, registrer_sittebillettkjop, registrer_sovebillettkjop # Opt 4
 
 FEILMELDING = "Ugyldig input"
 
@@ -103,6 +103,7 @@ def opt_4():
         FEILMELDING,
         valid_inputs=str
     )
+    print(dato)
 
     startstasjonID = get_valid_input(
         input_prompt="Fra: ",
@@ -152,16 +153,32 @@ def opt_4():
     
     index_displacement = len(ledige_sovebilletter)
     print("Sittebilletter:")
-    for i, (vognID, seteNr) in enumerate(np.unique(ledige_sittebilletter[:, :2], axis=0)):
+    print(ledige_sittebilletter, "\n", delstrekninger)
+    sittebilletter_for_valg = np.unique(ledige_sittebilletter[:, :2], axis=0)
+    for i, (vognID, seteNr) in enumerate(sittebilletter_for_valg):
         print(f"{i+index_displacement+1}. ", f"Vogn: {hent_vognNr(vognID)}, Sete: {seteNr}")
     
+    # Valg av billett
     billettvalg = get_valid_input(
-        input_prompt="Skriv et tall for å indikere billett: ",
+        input_prompt=f"Skriv et tall for å indikere billett nr. {i+1} (skriv 0 for å gå videre): ",
         error_message=FEILMELDING,
-        input_transform=int,
-        valid_inputs=range(len(ledige_sittebilletter) + len(ledige_sovebilletter) + 1)
+        input_transform=lambda i: int(i)-1,
+        valid_inputs=range(-1, len(ledige_sittebilletter) + len(ledige_sovebilletter))
     )
 
+
+    if billettvalg < index_displacement:
+        antallSeng = get_valid_input(
+            input_prompt="Hvor mange senger vil du bestille?",
+            error_message=FEILMELDING,
+            input_transform=lambda i: int(i)-1,
+            valid_inputs=[1, 2]
+        )
+        vognID, kupeNr = [int(el) for el in ledige_sovebilletter[billettvalg]]
+        registrer_sovebillettkjop(kID, togruteforekomstID, dato, vognID, kupeNr, antallSeng)
+    else:
+        vognID, seteNr = [int(el) for el in sittebilletter_for_valg[billettvalg-index_displacement]]
+        registrer_sittebillettkjop(kID, togruteforekomstID, dato, vognID, seteNr, delstrekninger)
 
 
 def opt_5():
@@ -184,22 +201,28 @@ def hovedmeny() -> None:
     til programmet termineres.
     Representerer funksjonaliteten i oppgave c), d), e), g) og h)
     """
+    main_loop = True
 
-    input_prompt = """
-        Vennligst velg alternativ:
-            1. Sjekk togruter på din stasjon for en gitt ukedag
-            2. Søk togruter som går mellom start- og sluttstasjon
-            3. Registrer deg som kunde
-            4. Kjøp billett
-            5. Få informasjon om ordre og reiser
+    while main_loop:
+        input_prompt = """
+            Vennligst velg alternativ:
+                1. Sjekk togruter på din stasjon for en gitt ukedag
+                2. Søk togruter som går mellom start- og sluttstasjon
+                3. Registrer deg som kunde
+                4. Kjøp billett
+                5. Få informasjon om ordre og reiser
 
-            6. Reset database
-    """
+                6. Reset database
 
-    bruker_in = get_valid_input(
-        input_prompt=input_prompt,
-        error_message=FEILMELDING,
-        valid_inputs=('1', '2', '3', '4', '5', '6')
-    )
-    
-    opts_functions[int(bruker_in)-1]()
+                Skriv 'avslutt' for å avbryte
+        """
+
+        bruker_in = get_valid_input(
+            input_prompt=input_prompt,
+            error_message=FEILMELDING,
+            valid_inputs=('1', '2', '3', '4', '5', '6', 'avslutt')
+        )
+
+        main_loop = not bruker_in.lower() == 'avslutt'
+        
+        if main_loop: opts_functions[int(bruker_in)-1]()

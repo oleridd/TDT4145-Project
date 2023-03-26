@@ -18,7 +18,6 @@ def hent_ledige_billetter(togruteForekomstID: int, dato: str, strekninger: list 
         Liste av: (vognID, seteNr, delStrekningID)
               og: (vognID, kupeNr)
     """
-    # NOTE: Må kanskje verifisere at togruteforekomst går på den gitte datoen
     with sql.connect("Jernbanenett.db") as con:
 
         # Sovebillett:
@@ -48,7 +47,7 @@ def hent_ledige_billetter(togruteForekomstID: int, dato: str, strekninger: list 
                                                 CROSS   JOIN (
                                                     SELECT delStrekningID /* Alle delstrekninger på den gitte togruteforekomsten */
                                                     FROM TogruteForekomst AS delTF NATURAL JOIN Togrute
-                                                                                NATURAL JOIN StrekningPaaBanestrekning
+                                                                                   NATURAL JOIN StrekningPaaBanestrekning
                                                     WHERE delTF.togruteForekomstID = (:togruteForekomstID)
                                                 )
                 WHERE mainTF.togruteForekomstID = (:togruteForekomstID) AND (vognID, seteNr, delStrekningID) NOT IN (
@@ -102,8 +101,6 @@ def registrer_sovebillettkjop(kID: int, togruteForekomstID: int, dato: str, vogn
     Returnerer:
         None
     """
-    # NOTE: Innfør logikk på å ta utgangspunkt i vognNr når man spør kunden
-
     # Sjekk at billetten som skal bestilles er ledig:
     ledige_billetter, _ = hent_ledige_billetter(togruteForekomstID, dato)
     try:
@@ -133,7 +130,7 @@ def registrer_sovebillettkjop(kID: int, togruteForekomstID: int, dato: str, vogn
         ordreID = get_smallest_elem_without_successor(brukt_ordreID) + 1
 
         # Insertering i KundeOrdre:
-        cursor = con.cursor()
+        cursor = con.cursor() # NOTE: DATOEN MÅ VÆRE I DAG
         cursor.execute("""
             INSERT INTO KundeOrdere
             VALUES
@@ -232,5 +229,5 @@ def registrer_sittebillettkjop(kID: int, togruteForekomstID: int, dato: str, vog
                     VALUES
                     ((:delStrekningID), (:ordreID), (:billettNR));
                 """,
-                {'delStrekningID': delStrk, 'ordreID': ordreID, 'billettNR': i+1}
+                {'delStrekningID': int(delStrk), 'ordreID': ordreID, 'billettNR': i+1}
                 )
